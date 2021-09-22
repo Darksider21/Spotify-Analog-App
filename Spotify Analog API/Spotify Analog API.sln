@@ -1,0 +1,43 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.31402.337
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Spotify Analog API", "Spotify Analog API\Spotify Analog API.csproj", "{AD641823-0EC7-4999-AC32-0649FD2BAA2F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Spotify Analog Tests", "Spotify Analog Tests\Spotify Analog Tests.csproj", "{701BE35A-4D1A-4CA2-9A30-E1FC814EDB87}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Spotify Analog Data Layer", "Spotify Analog Data Layer\Spotify Analog Data Layer.csproj", "{0AC6FC2A-4BE8-4E2A-ACD3-5296B6499FD5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Spotify Analog Domain Layer", "Spotify Analog Domain Layer\Spotify Analog Domain Layer.csproj", "{C5A469F3-1529-4A8C-831D-AA4D428D0F71}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{AD641823-0EC7-4999-AC32-0649FD2BAA2F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AD641823-0EC7-4999-AC32-0649FD2BAA2F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AD641823-0EC7-4999-AC32-0649FD2BAA2F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AD641823-0EC7-4999-AC32-0649FD2BAA2F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{701BE35A-4D1A-4CA2-9A30-E1FC814EDB87}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{701BE35A-4D1A-4CA2-9A30-E1FC814EDB87}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{701BE35A-4D1A-4CA2-9A30-E1FC814EDB87}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{701BE35A-4D1A-4CA2-9A30-E1FC814EDB87}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0AC6FC2A-4BE8-4E2A-ACD3-5296B6499FD5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0AC6FC2A-4BE8-4E2A-ACD3-5296B6499FD5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0AC6FC2A-4BE8-4E2A-ACD3-5296B6499FD5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0AC6FC2A-4BE8-4E2A-ACD3-5296B6499FD5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C5A469F3-1529-4A8C-831D-AA4D428D0F71}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C5A469F3-1529-4A8C-831D-AA4D428D0F71}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C5A469F3-1529-4A8C-831D-AA4D428D0F71}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C5A469F3-1529-4A8C-831D-AA4D428D0F71}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {B12160E7-8855-4A60-9D06-4CFA5E81AB18}
+	EndGlobalSection
+EndGlobal
