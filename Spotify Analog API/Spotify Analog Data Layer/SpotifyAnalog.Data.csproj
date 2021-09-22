@@ -5,4 +5,8 @@
     <RootNamespace>Spotify_Analog_Data_Layer</RootNamespace>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="5.0.10" />
+  </ItemGroup>
+
 </Project>
