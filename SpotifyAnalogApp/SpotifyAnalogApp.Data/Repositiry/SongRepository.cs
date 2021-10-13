@@ -6,10 +6,11 @@ using System.Threading.Tasks;
 using SpotifyAnalogApp.Data.Models;
 using Microsoft.EntityFrameworkCore;
 using SpotifyAnalogApp.Data.Data;
+using SpotifyAnalogApp.Data.Repositiry.Base;
 
 namespace SpotifyAnalogApp.Data.Repositiry
 {
-    public class SongRepository : Repository<Song>
+    public class SongRepository : Repository<Song>, ISongRepository
     {
         public SongRepository(SpotifyAnalogAppContext context) : base(context)
         {
