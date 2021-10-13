@@ -14,7 +14,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
-
+using SpotifyAnalogApp.Data.Repositiry;
+using SpotifyAnalogApp.Data.Repositiry.Base;
 
 namespace SpotifyAnalogApp
 {
@@ -30,7 +31,13 @@ namespace SpotifyAnalogApp
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            //data
             ConfigureDatabases(services);
+            services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
+            services.AddScoped<IAuthorRepository, AuthorRepository>();
+            services.AddScoped<IGenreRepository, GenreRepository>();
+            services.AddScoped<ISongRepository, SongRepository>();
+
             services.AddControllers();
             
         }

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace SpotifyAnalogApp.Data.Repositiry.Base
 {
-    interface IAuthorRepository
+    public interface IAuthorRepository
     {
     }
 }
