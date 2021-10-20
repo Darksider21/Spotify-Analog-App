@@ -9,7 +9,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SpotifyAnalogApp.Data", "Sp
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SpotifyAnalogApp.Business", "SpotifyAnalogApp.Business\SpotifyAnalogApp.Business.csproj", "{B3B69E96-DC18-4E63-BB5D-1F089E7A7577}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpotifyAnalogApp.Tests", "SpotifyAnalogApp.Tests\SpotifyAnalogApp.Tests.csproj", "{EA2E85C5-B404-48A3-9A98-D95E3D9670B6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SpotifyAnalogApp.Tests", "SpotifyAnalogApp.Tests\SpotifyAnalogApp.Tests.csproj", "{EA2E85C5-B404-48A3-9A98-D95E3D9670B6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

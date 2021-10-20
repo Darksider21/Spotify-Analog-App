@@ -16,6 +16,9 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using SpotifyAnalogApp.Data.Repositiry;
 using SpotifyAnalogApp.Data.Repositiry.Base;
+using SpotifyAnalogApp.Business.Services.ServiceInterfaces;
+using SpotifyAnalogApp.Business.Services;
+using Microsoft.AspNetCore.Mvc.NewtonsoftJson;
 
 namespace SpotifyAnalogApp
 {
@@ -38,8 +41,18 @@ namespace SpotifyAnalogApp
             services.AddScoped<IGenreRepository, GenreRepository>();
             services.AddScoped<ISongRepository, SongRepository>();
 
+            //Buisenes
+            services.AddScoped<ISongService, SongService>();
+            services.AddScoped<IGenreService, GenreService>();
+            services.AddScoped<IAuthorService, AuthorService>();
             services.AddControllers();
-            
+
+            //services.AddNewtonsoftJson(options =>
+            //    options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
+            //);
+
+
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

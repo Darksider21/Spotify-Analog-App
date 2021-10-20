@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SpotifyAnalogApp.Data.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,5 +9,6 @@ namespace SpotifyAnalogApp.Data.Repositiry.Base
 {
     public interface ISongRepository
     {
+        public Task<IEnumerable<Song>> GetSongListAsync();
     }
 }

@@ -15,6 +15,12 @@ namespace SpotifyAnalogApp.Data.Repositiry
         public SongRepository(SpotifyAnalogAppContext context) : base(context)
         {
 
+
+        }
+
+        public async Task<IEnumerable<Song>> GetSongListAsync()
+        {
+            return await GetAllAsync();
         }
     }
 }

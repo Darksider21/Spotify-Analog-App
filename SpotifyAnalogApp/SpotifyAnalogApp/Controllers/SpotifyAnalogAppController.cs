@@ -9,6 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using SpotifyAnalogApp.Data.Data;
 using SpotifyAnalogApp.Data.Models;
 using System.Collections;
+using SpotifyAnalogApp.Business.Services.ServiceInterfaces;
 
 namespace SpotifyAnalogApp.Controllers
 {
@@ -16,27 +17,25 @@ namespace SpotifyAnalogApp.Controllers
     [Route("[controller]")]
     public class SpotifyAnalogAppController : ControllerBase
     {
+        private ISongService songService;
         
-        private readonly SpotifyAnalogAppContext _dbContext;
-        public SpotifyAnalogAppController( SpotifyAnalogAppContext dbContext  )
+        public SpotifyAnalogAppController( ISongService songService  )
         {
-            _dbContext = dbContext;
+            this.songService = songService;
         }
-        public static List<Author> Authors
+        
+        [HttpGet]
+        public IActionResult GetSongsTest()
         {
-            get
-            {
-                List<Author> list = new List<Author> { new Author {Name="kekos", Songs = new List<Song> { new Song { Name = "LOLKEK"} } }};
-                return list;
-            }
+            var songs = songService.GetSongList();
+
+            return Ok(songs);
         }
 
         [HttpPost]
         public IActionResult PostData()
         {
-            _dbContext.Genres.Add(new Genre { GenreName = "Kek",
-                Authors=Authors   });
-            _dbContext.SaveChanges();
+            
             return Ok();
         }
 
