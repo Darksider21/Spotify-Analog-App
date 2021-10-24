@@ -13,7 +13,6 @@ namespace SpotifyAnalogApp.Data.Models
         [Required]
         public string Name { get; set; }
         
-        public ICollection<Song> Songs { get; set; }
         public Genre Genre { get; set; }
     }
 }

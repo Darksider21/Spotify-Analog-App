@@ -15,7 +15,7 @@ namespace SpotifyAnalogApp.Business.DTO
             
             public string Name { get; set; }
 
-            public ICollection<Song> Songs { get; set; }
+           
             public Genre Genre { get; set; }
         }
     }

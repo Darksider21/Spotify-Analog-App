@@ -27,7 +27,7 @@ namespace SpotifyAnalogApp.Controllers
         [HttpGet]
         public IActionResult GetSongsTest()
         {
-            var songs = songService.GetSongList();
+            var songs = songService.GetSongList().Result;
 
             return Ok(songs);
         }

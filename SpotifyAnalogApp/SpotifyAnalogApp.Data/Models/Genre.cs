@@ -16,7 +16,7 @@ namespace SpotifyAnalogApp.Data.Models
         public string GenreName { get; set; }
         
 
-        public ICollection<Author> Authors { get; set; }
+        
        
     }
 }

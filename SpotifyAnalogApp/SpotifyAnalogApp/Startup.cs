@@ -19,6 +19,7 @@ using SpotifyAnalogApp.Data.Repositiry.Base;
 using SpotifyAnalogApp.Business.Services.ServiceInterfaces;
 using SpotifyAnalogApp.Business.Services;
 using Microsoft.AspNetCore.Mvc.NewtonsoftJson;
+using System.Text.Json.Serialization;
 
 namespace SpotifyAnalogApp
 {
@@ -47,9 +48,7 @@ namespace SpotifyAnalogApp
             services.AddScoped<IAuthorService, AuthorService>();
             services.AddControllers();
 
-            //services.AddNewtonsoftJson(options =>
-            //    options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
-            //);
+            
 
 
 
