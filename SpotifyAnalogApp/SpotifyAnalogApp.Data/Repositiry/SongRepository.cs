@@ -12,9 +12,10 @@ namespace SpotifyAnalogApp.Data.Repositiry
 {
     public class SongRepository : Repository<Song>, ISongRepository
     {
+        private SpotifyAnalogAppContext testContext;
         public SongRepository(SpotifyAnalogAppContext context) : base(context)
         {
-
+            testContext = context;
 
         }
 
