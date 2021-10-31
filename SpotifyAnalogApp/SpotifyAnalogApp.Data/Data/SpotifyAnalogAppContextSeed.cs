@@ -105,12 +105,12 @@ namespace SpotifyAnalogApp.Data.Data
         private static IEnumerable<Song> GetPredefinedSongs()
         {
             var rock = new Genre() { GenreName = "Rock" };
-            var metal = new Genre() { GenreName = "Meatal" };
-            var classical = new Genre() { GenreName = "Classisal" };
+            var metal = new Genre() { GenreName = "Metal" };
+            var classical = new Genre() { GenreName = "Classical" };
             var pop = new Genre() { GenreName = "Pop" };
             var jpop = new Genre() { GenreName = "JPop" };
-            var electronic = new Genre() { GenreName = "electronic" };
-            var jazz = new Genre() { GenreName = "jazz" };
+            var electronic = new Genre() { GenreName = "Electronic" };
+            var jazz = new Genre() { GenreName = "Jazz" };
             //genres
 
             var skillet = new Author() { Name = "Skillet", Genre = rock };

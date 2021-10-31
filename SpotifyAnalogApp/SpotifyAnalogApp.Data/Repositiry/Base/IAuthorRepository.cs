@@ -11,6 +11,7 @@ namespace SpotifyAnalogApp.Data.Repositiry.Base
     {
         public Task<IEnumerable<Author>> GetAllAuthorsAsync();
         public Task<IEnumerable<Author>> GetByNameAsync(string name);
+        public Task<IEnumerable<Author>> GetByGenreAsync(string genre);
 
     }
 }

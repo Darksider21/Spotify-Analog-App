@@ -11,7 +11,7 @@ namespace SpotifyAnalogApp.Business.Services.ServiceInterfaces
     {
       public  Task<IEnumerable<GenreModel>> GetGenreList();
 
-      public  Task<IEnumerable<GenreModel>> GetGenreByNameList(string name);
+      public  Task<IEnumerable<GenreModel>> GetGenreByNameList(string genre);
 
 
     }

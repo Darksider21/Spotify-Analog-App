@@ -53,7 +53,7 @@ namespace SpotifyAnalogApp
 
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "deleteme", Version = "v1" });
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Spotify Analog App", Version = "v1" });
             });
 
 
@@ -68,7 +68,7 @@ namespace SpotifyAnalogApp
             {
                 app.UseDeveloperExceptionPage();
                 app.UseSwagger();
-                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "deleteme v1"));
+                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "SpotifyAnalogApp v1"));
             }
 
             app.UseHttpsRedirection();

@@ -21,9 +21,13 @@ namespace SpotifyAnalogApp.Business.Services
             this.genreRepository = genreRepository;
         }
 
-        public Task<IEnumerable<GenreModel>> GetGenreByNameList(string name)
+        public async Task<IEnumerable<GenreModel>> GetGenreByNameList(string genre)
         {
-            throw new NotImplementedException();
+            var genreList = await genreRepository.GetGenreByNameList(genre);
+
+            var mapped = ObjectMapper.Mapper.Map<IEnumerable<GenreModel>>(genreList);
+
+            return mapped;
         }
 
         public async Task<IEnumerable<GenreModel>> GetGenreList()

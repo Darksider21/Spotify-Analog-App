@@ -22,7 +22,12 @@ namespace SpotifyAnalogApp.Data.Repositiry
 
         public async Task<IEnumerable<Author>> GetAllAuthorsAsync()
         {
-            return await GetAllAsync();
+            return await base._dbContext.Authors.Select(x => x).Include(a => a.Genre).ToListAsync();
+        }
+
+        public async Task<IEnumerable<Author>> GetByGenreAsync(string genre)
+        {
+            return await base._dbContext.Authors.Where(x => x.Genre.GenreName.ToLower() == genre.ToLower()).Include(g => g.Genre).ToListAsync();
         }
 
         public async Task<IEnumerable<Author>> GetByNameAsync(string name)

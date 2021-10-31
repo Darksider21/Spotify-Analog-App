@@ -34,7 +34,13 @@ namespace SpotifyAnalogApp.Business.Services
             var mapped = ObjectMapper.Mapper.Map<IEnumerable<AuthorModel>>(authorList);
             return mapped;
         }
+        public async Task<IEnumerable<AuthorModel>> GetAuthorByGenreList(string genre)
+        {
+            var authorList = await authorRepository.GetByGenreAsync(genre);
+            var mapped = ObjectMapper.Mapper.Map<IEnumerable<AuthorModel>>(authorList);
+            return mapped;
+        }
 
-        
+
     }
 }
