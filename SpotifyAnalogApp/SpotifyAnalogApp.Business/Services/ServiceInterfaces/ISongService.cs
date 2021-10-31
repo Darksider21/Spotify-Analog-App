@@ -10,6 +10,7 @@ namespace SpotifyAnalogApp.Business.Services.ServiceInterfaces
     public interface ISongService
     {
         Task<IEnumerable<SongModel>> GetSongList();
+        Task<IEnumerable<SongModel>> GetSongsWithAuthorsList();
         //Task<SongModel> GetSongById(int songId);
 
         //Task<IEnumerable<SongModel>> GetSongsByAuthorName(string authorName);

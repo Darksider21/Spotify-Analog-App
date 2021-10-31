@@ -16,5 +16,14 @@ namespace SpotifyAnalogApp.Data.Repositiry
         {
 
         }
+        public async Task<IEnumerable<Genre>> GetAllGenresAsync()
+        {
+            return await GetAllAsync();
+        }
+
+        public async Task<IEnumerable<Genre>> GetGenreByNameList(string name)
+        {
+            return await GetAsync(x => x.GenreName.ToLower().Contains(name.ToLower()));
+        }
     }
 }

@@ -23,5 +23,10 @@ namespace SpotifyAnalogApp.Data.Repositiry
         {
             return await GetAllAsync();
         }
+
+        public async Task<IEnumerable<Song>> GetSongWithAuthorsListAsync()
+        {
+            return await testContext.Songs.Select(x => x).Include(n => n.Author).ToListAsync();
+        }
     }
 }

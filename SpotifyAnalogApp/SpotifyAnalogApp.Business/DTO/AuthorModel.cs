@@ -9,14 +9,14 @@ namespace SpotifyAnalogApp.Business.DTO
 {
     public class AuthorModel
     {
-        public class Author
-        {
-            public int AuthorId { get; protected set; }
+        
+        
+            public int AuthorId { get;  set; }
             
             public string Name { get; set; }
 
            
             public Genre Genre { get; set; }
-        }
+        
     }
 }

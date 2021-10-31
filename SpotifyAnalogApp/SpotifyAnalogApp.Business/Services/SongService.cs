@@ -26,7 +26,14 @@ namespace SpotifyAnalogApp.Business.Services
         {
             throw new NotImplementedException();
         }
+        public async Task<IEnumerable<SongModel>> GetSongsWithAuthorsList()
+        {
+            var songsWithAuthorsList = await _songRepository.GetSongWithAuthorsListAsync();
 
+            var mapped = ObjectMapper.Mapper.Map<IEnumerable<SongModel>>(songsWithAuthorsList);
+            return mapped;
+
+        }
         public async Task<IEnumerable<SongModel>> GetSongList()
         {
             var songsList = await _songRepository.GetSongListAsync();
@@ -55,5 +62,7 @@ namespace SpotifyAnalogApp.Business.Services
         {
             throw new NotImplementedException();
         }
+
+        
     }
 }

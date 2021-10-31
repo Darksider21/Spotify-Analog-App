@@ -15,6 +15,19 @@ namespace SpotifyAnalogApp.Data.Repositiry
        public AuthorRepository(SpotifyAnalogAppContext context) :base(context)
         {
 
+           
+
+        }
+
+
+        public async Task<IEnumerable<Author>> GetAllAuthorsAsync()
+        {
+            return await GetAllAsync();
+        }
+
+        public async Task<IEnumerable<Author>> GetByNameAsync(string name)
+        {
+            return await base._dbContext.Authors.Where(x => x.Name.ToLower().Contains(name.ToLower())).Include(x => x.Genre).ToListAsync();
         }
     }
 }
