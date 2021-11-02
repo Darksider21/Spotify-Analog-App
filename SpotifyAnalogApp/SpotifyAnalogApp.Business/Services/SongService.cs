@@ -22,9 +22,12 @@ namespace SpotifyAnalogApp.Business.Services
             _songRepository = songRepository;
         }
 
-        public Task<SongModel> GetSongById(int songId)
+        public async Task<SongModel> GetSongById(int songId)
         {
-            throw new NotImplementedException();
+            var songsWithAuthorsList = await _songRepository.GetSongById(songId);
+
+            var mapped = ObjectMapper.Mapper.Map<SongModel>(songsWithAuthorsList);
+            return mapped;
         }
         public async Task<IEnumerable<SongModel>> GetSongsWithAuthorsList()
         {
@@ -43,26 +46,67 @@ namespace SpotifyAnalogApp.Business.Services
             return mapped;
         }
 
-        public Task<IEnumerable<SongModel>> GetSongsByAuthorName(string authorName)
+        public async Task<IEnumerable<SongModel>> GetSongsByAuthorName(string authorName)
         {
-            throw new NotImplementedException();
+            var songsList = await _songRepository.GetSongsByAuthorName(authorName);
+
+
+            var mapped = ObjectMapper.Mapper.Map<IEnumerable<SongModel>>(songsList);
+            return mapped;
         }
 
-        public Task<IEnumerable<SongModel>> GetSongsByGenreName(string GenreName)
+        public async Task<IEnumerable<SongModel>> GetSongsByGenreName(string GenreName)
         {
-            throw new NotImplementedException();
+            var songsList = await _songRepository.GetSongsByGenreName(GenreName);
+
+
+            var mapped = ObjectMapper.Mapper.Map<IEnumerable<SongModel>>(songsList);
+            return mapped;
         }
 
-        public Task<IEnumerable<SongModel>> GetSongsByMultipleAuthors(string[] authorsNames)
+        public async Task<IEnumerable<SongModel>> GetSongsByMultipleAuthors(string[] authorsNames)
         {
-            throw new NotImplementedException();
+            var songsList = await _songRepository.GetSongsByMultipleAuthors(authorsNames);
+
+
+            var mapped = ObjectMapper.Mapper.Map<IEnumerable<SongModel>>(songsList);
+            return mapped;
         }
 
-        public Task<IEnumerable<SongModel>> GetSongsByMultipleGenres(string[] GenreNames)
+        public async Task<IEnumerable<SongModel>> GetSongsByMultipleGenres(string[] GenreNames)
         {
-            throw new NotImplementedException();
+            var songsList = await _songRepository.GetSongsByMultipleGenres(GenreNames);
+
+
+            var mapped = ObjectMapper.Mapper.Map<IEnumerable<SongModel>>(songsList);
+            return mapped;
         }
 
-        
+        public async Task<IEnumerable<SongModel>> GetRandomSongsList(int amountOfSongs)
+        {
+            var songsList = await _songRepository.GetRandomSongsListAsync(amountOfSongs);
+
+
+            var mapped = ObjectMapper.Mapper.Map<IEnumerable<SongModel>>(songsList);
+            return mapped;
+        }
+
+        public async Task<IEnumerable<SongModel>> GetRandomSongsListByGenres(int amountOfSongs, string[] genreNames)
+        {
+            var songsList = await _songRepository.GetRandomSongsByGenresListAsync(amountOfSongs , genreNames);
+
+
+            var mapped = ObjectMapper.Mapper.Map<IEnumerable<SongModel>>(songsList);
+            return mapped;
+        }
+
+        public async Task<IEnumerable<SongModel>> GetRandomSongsListByAuthors(int amountOfSongs, string[] authorNames)
+        {
+            var songsList = await _songRepository.GetRandomSongsByAuthorsListAsync(amountOfSongs, authorNames);
+
+
+            var mapped = ObjectMapper.Mapper.Map<IEnumerable<SongModel>>(songsList);
+            return mapped;
+        }
     }
 }
