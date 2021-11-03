@@ -3,51 +3,23 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SpotifyAnalogApp.Data.Data;
 
 namespace SpotifyAnalogApp.Data.Migrations
 {
     [DbContext(typeof(SpotifyAnalogAppContext))]
-    partial class SpotifyAnalogAppContextModelSnapshot : ModelSnapshot
+    [Migration("20211102203457_UpdatingUsers")]
+    partial class UpdatingUsers
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("ProductVersion", "5.0.10")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-            modelBuilder.Entity("PlaylistSong", b =>
-                {
-                    b.Property<int>("PlaylistsPlaylistId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("SongsInPlaylistSongId")
-                        .HasColumnType("int");
-
-                    b.HasKey("PlaylistsPlaylistId", "SongsInPlaylistSongId");
-
-                    b.HasIndex("SongsInPlaylistSongId");
-
-                    b.ToTable("PlaylistSong");
-                });
-
-            modelBuilder.Entity("SongUser", b =>
-                {
-                    b.Property<int>("FavoriteSongsSongId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("UsersUserId")
-                        .HasColumnType("int");
-
-                    b.HasKey("FavoriteSongsSongId", "UsersUserId");
-
-                    b.HasIndex("UsersUserId");
-
-                    b.ToTable("SongUser");
-                });
 
             modelBuilder.Entity("SpotifyAnalogApp.Data.Models.Author", b =>
                 {
@@ -103,7 +75,7 @@ namespace SpotifyAnalogApp.Data.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Playlists");
+                    b.ToTable("Playlist");
                 });
 
             modelBuilder.Entity("SpotifyAnalogApp.Data.Models.Song", b =>
@@ -123,11 +95,21 @@ namespace SpotifyAnalogApp.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int?>("PlaylistId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("UserId")
+                        .HasColumnType("int");
+
                     b.HasKey("SongId");
 
                     b.HasIndex("AuthorId");
 
                     b.HasIndex("GenreId");
+
+                    b.HasIndex("PlaylistId");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("Songs");
                 });
@@ -151,36 +133,6 @@ namespace SpotifyAnalogApp.Data.Migrations
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("PlaylistSong", b =>
-                {
-                    b.HasOne("SpotifyAnalogApp.Data.Models.Playlist", null)
-                        .WithMany()
-                        .HasForeignKey("PlaylistsPlaylistId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("SpotifyAnalogApp.Data.Models.Song", null)
-                        .WithMany()
-                        .HasForeignKey("SongsInPlaylistSongId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("SongUser", b =>
-                {
-                    b.HasOne("SpotifyAnalogApp.Data.Models.Song", null)
-                        .WithMany()
-                        .HasForeignKey("FavoriteSongsSongId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("SpotifyAnalogApp.Data.Models.User", null)
-                        .WithMany()
-                        .HasForeignKey("UsersUserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("SpotifyAnalogApp.Data.Models.Author", b =>
                 {
                     b.HasOne("SpotifyAnalogApp.Data.Models.Genre", "Genre")
@@ -192,11 +144,9 @@ namespace SpotifyAnalogApp.Data.Migrations
 
             modelBuilder.Entity("SpotifyAnalogApp.Data.Models.Playlist", b =>
                 {
-                    b.HasOne("SpotifyAnalogApp.Data.Models.User", "User")
+                    b.HasOne("SpotifyAnalogApp.Data.Models.User", null)
                         .WithMany("UsersPlaylists")
                         .HasForeignKey("UserId");
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("SpotifyAnalogApp.Data.Models.Song", b =>
@@ -209,13 +159,28 @@ namespace SpotifyAnalogApp.Data.Migrations
                         .WithMany()
                         .HasForeignKey("GenreId");
 
+                    b.HasOne("SpotifyAnalogApp.Data.Models.Playlist", null)
+                        .WithMany("SongsInPlaylist")
+                        .HasForeignKey("PlaylistId");
+
+                    b.HasOne("SpotifyAnalogApp.Data.Models.User", null)
+                        .WithMany("FavoriteSongs")
+                        .HasForeignKey("UserId");
+
                     b.Navigation("Author");
 
                     b.Navigation("Genre");
                 });
 
+            modelBuilder.Entity("SpotifyAnalogApp.Data.Models.Playlist", b =>
+                {
+                    b.Navigation("SongsInPlaylist");
+                });
+
             modelBuilder.Entity("SpotifyAnalogApp.Data.Models.User", b =>
                 {
+                    b.Navigation("FavoriteSongs");
+
                     b.Navigation("UsersPlaylists");
                 });
 #pragma warning restore 612, 618

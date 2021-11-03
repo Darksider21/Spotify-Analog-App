@@ -6,7 +6,14 @@ using System.Threading.Tasks;
 
 namespace SpotifyAnalogApp.Data.Models
 {
-    class Playlist
+    public class Playlist
     {
+        public int PlaylistId { get; set; }
+
+        public string PlaylistName { get; set; }
+
+        public ICollection<Song> SongsInPlaylist { get; set; }
+
+        public User User { get; set; }
     }
 }
