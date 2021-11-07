@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using SpotifyAnalogApp.Business.Services.ServiceInterfaces;
 using System;
@@ -44,6 +45,7 @@ namespace SpotifyAnalogApp.Web.Controllers
             return Ok(authors);
 
         }
+        //зліпити разом
         [Route("getbygenre")]
         [HttpGet]
         public async Task<IActionResult> GetAuthorByGenre(string genre)

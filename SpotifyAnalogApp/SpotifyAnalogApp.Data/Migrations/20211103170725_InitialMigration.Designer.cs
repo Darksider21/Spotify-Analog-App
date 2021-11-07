@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SpotifyAnalogApp.Data.Data;
 
 namespace SpotifyAnalogApp.Data.Migrations
 {
     [DbContext(typeof(SpotifyAnalogAppContext))]
-    partial class SpotifyAnalogAppContextModelSnapshot : ModelSnapshot
+    [Migration("20211103170725_InitialMigration")]
+    partial class InitialMigration
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -142,10 +144,6 @@ namespace SpotifyAnalogApp.Data.Migrations
                     b.Property<DateTime>("DateCreated")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("Email")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -196,11 +194,9 @@ namespace SpotifyAnalogApp.Data.Migrations
 
             modelBuilder.Entity("SpotifyAnalogApp.Data.Models.Playlist", b =>
                 {
-                    b.HasOne("SpotifyAnalogApp.Data.Models.User", "User")
+                    b.HasOne("SpotifyAnalogApp.Data.Models.User", null)
                         .WithMany("UsersPlaylists")
                         .HasForeignKey("UserId");
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("SpotifyAnalogApp.Data.Models.Song", b =>

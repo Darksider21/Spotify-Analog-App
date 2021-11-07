@@ -25,6 +25,7 @@ namespace SpotifyAnalogApp.Data.Repositiry
         }
         public async Task<Song> GetSongById(int id)
         {
+
             return await base._dbContext.Songs.Where(x => x.SongId == id).Include(x => x.Author.Genre).FirstOrDefaultAsync();
         }
 
@@ -61,7 +62,7 @@ namespace SpotifyAnalogApp.Data.Repositiry
         // Guid.NewGuid() generate random number every execution and EntityFramework know how to handle it
         public async Task<IEnumerable<Song>> GetRandomSongsListAsync(int amountOfSongs)
         {
-            return await base._dbContext.Songs.OrderBy(_ => Guid.NewGuid() ).Take(amountOfSongs).ToListAsync();
+           return await base._dbContext.Songs.OrderBy(_ => Guid.NewGuid()).Take(amountOfSongs).ToListAsync();
         }
 
         public async Task<IEnumerable<Song>> GetRandomSongsByGenresListAsync(int amountOfSongs, string[] genreNames)

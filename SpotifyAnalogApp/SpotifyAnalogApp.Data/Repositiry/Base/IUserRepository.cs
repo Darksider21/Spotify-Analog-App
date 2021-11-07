@@ -14,13 +14,12 @@ namespace SpotifyAnalogApp.Data.Repositiry.Base
         public Task<User> GetUserById(int id);
 
         public Task CreateUser(User user);
-        public Task DeleteUser(User user);
+        public Task DeleteUser(int id);
         public Task UpdateUser(User user);
 
-        public Task AddPlaylistToUser(Playlist playlis);
-        public Task AddSongToFavorites(Song song);
 
-        public Task AddMultipleSongsToFavorites(Song[] songs);
+       
+
 
 
     }

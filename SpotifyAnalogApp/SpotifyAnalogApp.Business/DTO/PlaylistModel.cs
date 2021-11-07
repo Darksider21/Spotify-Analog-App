@@ -1,12 +1,13 @@
-﻿using System;
+﻿using SpotifyAnalogApp.Data.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SpotifyAnalogApp.Data.Models
+namespace SpotifyAnalogApp.Business.DTO
 {
-    public class Playlist
+    public class PlaylistModel
     {
         public int PlaylistId { get; set; }
 
@@ -15,6 +16,5 @@ namespace SpotifyAnalogApp.Data.Models
         public ICollection<Song> SongsInPlaylist { get; set; }
 
         public User User { get; set; }
-
     }
 }
