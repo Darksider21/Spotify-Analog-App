@@ -1,4 +1,5 @@
-﻿using SpotifyAnalogApp.Data.Data;
+﻿using Microsoft.EntityFrameworkCore;
+using SpotifyAnalogApp.Data.Data;
 using SpotifyAnalogApp.Data.Models;
 using SpotifyAnalogApp.Data.Repositiry.Base;
 using System;
@@ -15,6 +16,7 @@ namespace SpotifyAnalogApp.Data.Repositiry
         {
         }
 
+
         
         public async Task CreatePlaylistForUser(Playlist playlis)
         {
@@ -24,6 +26,21 @@ namespace SpotifyAnalogApp.Data.Repositiry
         public async Task DeletePlaylist(Playlist playlis)
         {
             await DeleteAsync(playlis);
+        }
+
+        public async Task<Playlist> GetPlaylistById(int playlistId)
+        {
+            return  await _dbContext.Playlists.Where(x => x.PlaylistId.Equals(playlistId)).Include(x => x.SongsInPlaylist).FirstOrDefaultAsync();
+        }
+
+        public async Task<IEnumerable<Playlist>> GetPlaylists()
+        {
+            return await _dbContext.Playlists.Select(x => x).Include(x => x.SongsInPlaylist).ToListAsync();
+        }
+
+        public async Task<IEnumerable<Playlist>> GetPlaylistsByUserId(int[] userIds)
+        {
+            return await _dbContext.Playlists.Where(x => userIds.Contains(x.User.UserId)).Select(x => x).Include(x => x.SongsInPlaylist).ToListAsync();
         }
 
         public async Task UpdatePlaylist(Playlist playlis)

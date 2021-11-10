@@ -18,8 +18,8 @@ namespace SpotifyAnalogApp.Business.DTO
         
         public string Email { get; set; }
 
-        public ICollection<Song> FavoriteSongs { get; set; }
+        public ICollection<SongModel> FavoriteSongs { get; set; }
 
-        public ICollection<Playlist> UsersPlaylists { get; set; }
+        public ICollection<PlaylistModel> UsersPlaylists { get; set; }
     }
 }

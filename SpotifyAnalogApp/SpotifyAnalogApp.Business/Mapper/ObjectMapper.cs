@@ -43,6 +43,14 @@ namespace SpotifyAnalogApp.Business.Mapper
                 .ForMember(mem => mem.UserId, model => model.Ignore())
                 .ForMember(mem => mem.DateCreated, model => model.Ignore());
 
+            CreateMap<ModifyPlaylistModel, Playlist>().
+                ForMember(mem => mem.PlaylistId, model => model.Ignore())
+                .ForMember(mem => mem.PlaylistName, model => model.Condition(src => !string.IsNullOrEmpty(src.PlaylistName)))
+                .ForMember(mem => mem.SongsInPlaylist, model => model.Condition(src => src.SongsInPlaylist != null))
+                .ForMember(mem => mem.User, model => model.Condition(src => src.User != null));
+
+
+
 
 
 

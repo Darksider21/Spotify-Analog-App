@@ -9,6 +9,11 @@ namespace SpotifyAnalogApp.Data.Repositiry.Base
 {
     public interface IPlaylistRepository
     {
+        public Task<IEnumerable<Playlist>> GetPlaylists();
+
+        public Task<Playlist> GetPlaylistById(int playlistId);
+
+        public Task<IEnumerable<Playlist>> GetPlaylistsByUserId(int[] userIds);
 
         public Task CreatePlaylistForUser(Playlist playlis);
 

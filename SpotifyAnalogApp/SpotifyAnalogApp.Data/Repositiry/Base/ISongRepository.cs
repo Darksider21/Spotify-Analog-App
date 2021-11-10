@@ -12,6 +12,7 @@ namespace SpotifyAnalogApp.Data.Repositiry.Base
         public Task<IEnumerable<Song>> GetSongListAsync();
         public Task<IEnumerable<Song>> GetSongWithAuthorsListAsync();
         public Task<Song> GetSongById(int id);
+        public Task<IEnumerable<Song>> GetSongsByIds(int[] songIds);
 
         public Task<IEnumerable<Song>> GetSongsByAuthorName(string name);
         public Task<IEnumerable<Song>> GetSongsByMultipleAuthors(string[] names);

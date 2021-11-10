@@ -14,10 +14,12 @@ namespace SpotifyAnalogApp.Web.Controllers
     public class UsersController : ControllerBase
     {
         private IUserService userService;
+        private IPlaylistService playlistService;
 
-       public  UsersController(IUserService userService)
+       public  UsersController(IUserService userService, IPlaylistService playlistService)
         {
             this.userService = userService;
+            this.playlistService = playlistService;
         }
 
 
@@ -39,15 +41,23 @@ namespace SpotifyAnalogApp.Web.Controllers
         }
         [HttpGet]
         [Route("getPlaylist")]
-        public async Task<IActionResult> GetPlaylists(int userId = 0 )
+        public async Task<IActionResult> GetPlaylists([FromQuery]int[] userIds )
         {
-            return Ok();
+            if (userIds.Any())
+            {
+                var playlistsByUsers = await playlistService.GetPlaylistsByUserId(userIds);
+                return Ok(playlistsByUsers);
+
+            }
+            var playlists = await playlistService.GetAllPlaylists();
+            return Ok(playlists);
         }
         [HttpGet]
         [Route("getPlaylistByid")]
         public async Task<IActionResult> GetPlaylistById(int playlistId)
         {
-            return Ok();
+            var playlist = await playlistService.GetPlaylistById(playlistId);
+            return Ok(playlist);
         }
 
         [HttpPost]
@@ -60,16 +70,19 @@ namespace SpotifyAnalogApp.Web.Controllers
         }
         [HttpPost]
         [Route("createPlaylistForUser")]
-        public async Task<IActionResult> CreatePlaylist( int userId , int[] songIds)
+        public async Task<IActionResult> CreatePlaylist( int userId ,  string playlistName , [FromQuery] int[] songIds)
         {
-            return Ok();
+            var playlist = await playlistService.CreatePlaylist(userId , songIds , playlistName);
+
+            return Ok(playlist);
         }
         
         [HttpPatch]
         [Route("modifyPlaylist")]
-        public async Task<IActionResult> ModifyPlaylist(string action, int playlistId, int[] songIds)
+        public async Task<IActionResult> ModifyPlaylist(string action, int playlistId, string playlistName ,  [FromQuery]int[] songIds)
         {
-            return Ok();
+            var playlist = await playlistService.ModifyPlaylist(action, playlistId, songIds, playlistName);
+            return Ok(playlist);
         }
 
         [HttpPatch]
@@ -85,9 +98,10 @@ namespace SpotifyAnalogApp.Web.Controllers
 
         [HttpPatch]
         [Route("modifyUsersFavorites")]
-        public async Task<IActionResult> ModifyFavorites(string action, int userId , int[] songIds)
+        public async Task<IActionResult> ModifyFavorites(string action, int userId , [FromQuery]int[] songIds)
         {
-            return Ok();
+            var user = await userService.ModifyFavorites(action, userId, songIds);
+            return Ok(user);
         }
 
         [HttpDelete]

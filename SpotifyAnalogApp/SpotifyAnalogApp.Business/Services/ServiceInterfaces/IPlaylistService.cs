@@ -9,8 +9,11 @@ namespace SpotifyAnalogApp.Business.Services.ServiceInterfaces
 {
     public interface IPlaylistService
     {
-        public Task<ICollection<PlaylistModel>> GetAllPlaylists();
+        public Task<IEnumerable<PlaylistModel>> GetAllPlaylists();
         public Task<PlaylistModel> GetPlaylistById(int playlistId);
-        public Task<ICollection<PlaylistModel>> GetPlaylistsByUserId(int UserId);
+        public Task<IEnumerable<PlaylistModel>> GetPlaylistsByUserId(int[] userId);
+
+        public Task<PlaylistModel> CreatePlaylist(int userId, int[] songsid, string playlistName);
+        public Task<PlaylistModel> ModifyPlaylist(string action, int playlistId, int[] songsid, string playlistName);
     }
 }

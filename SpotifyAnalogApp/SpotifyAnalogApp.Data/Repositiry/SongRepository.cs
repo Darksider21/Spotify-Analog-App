@@ -28,6 +28,10 @@ namespace SpotifyAnalogApp.Data.Repositiry
 
             return await base._dbContext.Songs.Where(x => x.SongId == id).Include(x => x.Author.Genre).FirstOrDefaultAsync();
         }
+        public async Task<IEnumerable<Song>> GetSongsByIds(int[] songIds)
+        {
+            return await _dbContext.Songs.Where(x => songIds.Contains(x.SongId)).ToListAsync();
+        }
 
         public async Task<IEnumerable<Song>> GetSongsByAuthorName(string name)
         {
