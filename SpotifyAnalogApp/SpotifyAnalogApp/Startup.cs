@@ -41,15 +41,23 @@ namespace SpotifyAnalogApp
             services.AddScoped<IAuthorRepository, AuthorRepository>();
             services.AddScoped<IGenreRepository, GenreRepository>();
             services.AddScoped<ISongRepository, SongRepository>();
+            services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<IPlaylistRepository, PlaylistRepository>();
 
             //Buisenes
             services.AddScoped<ISongService, SongService>();
             services.AddScoped<IGenreService, GenreService>();
             services.AddScoped<IAuthorService, AuthorService>();
-            services.AddControllers();
-            //services.AddControllers().AddNewtonsoftJson(options =>
-            //options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
-
+            services.AddScoped<IUserService, UserService>();
+            services.AddScoped<IPlaylistService, PlaylistService>();
+            //services.AddControllers();
+            services.AddControllers().AddNewtonsoftJson(options =>
+            options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
+            services.AddAuthentication().AddFacebook(facebookOptions =>
+            {
+                facebookOptions.AppId = Configuration["Authentication:Facebook:AppId"];
+                facebookOptions.AppSecret = Configuration["Authentication:Facebook:AppSecret"];
+            });
 
             services.AddSwaggerGen(c =>
             {
@@ -74,7 +82,7 @@ namespace SpotifyAnalogApp
             app.UseHttpsRedirection();
 
             app.UseRouting();
-
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>

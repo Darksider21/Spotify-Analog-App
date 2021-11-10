@@ -15,5 +15,6 @@ namespace SpotifyAnalogApp.Data.Models
         public ICollection<Song> SongsInPlaylist { get; set; }
 
         public User User { get; set; }
+
     }
 }

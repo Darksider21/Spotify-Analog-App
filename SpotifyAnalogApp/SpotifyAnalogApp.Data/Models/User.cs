@@ -15,6 +15,9 @@ namespace SpotifyAnalogApp.Data.Models
         public string Name { get; set; }
         [Required]
         public DateTime DateCreated { get; set; }
+        [Required]
+        [EmailAddress]
+        public string Email { get; set; }
 
         public ICollection<Song> FavoriteSongs { get; set; }
 

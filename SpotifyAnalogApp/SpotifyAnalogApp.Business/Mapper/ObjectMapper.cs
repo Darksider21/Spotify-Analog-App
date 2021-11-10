@@ -33,6 +33,26 @@ namespace SpotifyAnalogApp.Business.Mapper
             CreateMap<Author, AuthorModel>().ReverseMap();
             CreateMap<Song, SongModel>().ReverseMap();
             CreateMap<Genre, GenreModel>().ReverseMap();
+            CreateMap<User, UserModel>().ReverseMap();
+            CreateMap<Playlist, PlaylistModel>().ReverseMap();
+            CreateMap<ModifyUserModel, User>()
+                .ForMember(mem => mem.Name, model => model.Condition(src => !string.IsNullOrWhiteSpace(src.Name)))
+                .ForMember(mem => mem.Email, model => model.Condition(src => !string.IsNullOrWhiteSpace(src.Email)))
+                .ForMember(mem => mem.FavoriteSongs, model => model.Condition(src => src.FavoriteSongs != null))
+                .ForMember(mem => mem.UsersPlaylists, model => model.Condition(src => src.UsersPlaylists != null))
+                .ForMember(mem => mem.UserId, model => model.Ignore())
+                .ForMember(mem => mem.DateCreated, model => model.Ignore());
+
+            CreateMap<ModifyPlaylistModel, Playlist>().
+                ForMember(mem => mem.PlaylistId, model => model.Ignore())
+                .ForMember(mem => mem.PlaylistName, model => model.Condition(src => !string.IsNullOrEmpty(src.PlaylistName)))
+                .ForMember(mem => mem.SongsInPlaylist, model => model.Condition(src => src.SongsInPlaylist != null))
+                .ForMember(mem => mem.User, model => model.Condition(src => src.User != null));
+
+
+
+
+
 
         }
 
