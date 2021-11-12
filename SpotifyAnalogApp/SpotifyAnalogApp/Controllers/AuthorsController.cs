@@ -24,40 +24,14 @@ namespace SpotifyAnalogApp.Web.Controllers
 
         [HttpGet]
 
-        public async Task<IActionResult> GetAllAuthors()
+        public async Task<IActionResult> GetAllAuthors(string name , string genre)
         {
-            var authors = await authorService.GetAuthorList();
+            var authors = await authorService.GetAuthorList(name,genre);
 
             return Ok(authors);
 
         }
 
-        [Route("getbyname")]
-        [HttpGet]
-        public async Task<IActionResult> GetAuthorByName(string name)
-        {
-            if (name == null)
-            {
-                return BadRequest();
-            }
-            var authors = await authorService.GetAuthorByNameList(name);
-
-            return Ok(authors);
-
-        }
-        //зліпити разом
-        [Route("getbygenre")]
-        [HttpGet]
-        public async Task<IActionResult> GetAuthorByGenre(string genre)
-        {
-            if (genre == null)
-            {
-                return BadRequest();
-            }
-            var authors = await authorService.GetAuthorByGenreList(genre);
-
-            return Ok(authors);
-
-        }
+        
     }
 }

@@ -2,6 +2,7 @@
 using SpotifyAnalogApp.Business.DTO;
 using SpotifyAnalogApp.Business.Mapper;
 using SpotifyAnalogApp.Business.Services.ServiceInterfaces;
+using SpotifyAnalogApp.Data.Models;
 using SpotifyAnalogApp.Data.Repositiry.Base;
 using System;
 using System.Collections.Generic;
@@ -20,26 +21,34 @@ namespace SpotifyAnalogApp.Business.Services
             this.authorRepository = authorRepository;
         }
 
-        public async Task<IEnumerable<AuthorModel>> GetAuthorByNameList(string name)
-        {
-            var authorList = await authorRepository.GetByNameAsync(name);
-            var mapped = ObjectMapper.Mapper.Map<IEnumerable<AuthorModel>>(authorList);
-            
-            return mapped;
-        }
+       
 
-        public async Task<IEnumerable<AuthorModel>> GetAuthorList()
+        public async Task<IEnumerable<AuthorModel>> GetAuthorList(string name , string genre)
         {
-            var authorList = await authorRepository.GetAllAuthorsAsync();
+            IEnumerable<Author> authorList = new List<Author>();
+            if(name != null && genre != null)
+            {
+                authorList = await authorRepository.GetByNameAndGenre(name, genre);
+            }
+            else if (name != null)
+            {
+                authorList = await authorRepository.GetByNameAsync(name);
+            }
+            else if (genre!= null)
+            {
+                authorList = await authorRepository.GetByGenreAsync(genre);
+            }
+            else
+            {
+                 authorList = await authorRepository.GetAllAuthorsAsync();
+            }
+            
+
+            
             var mapped = ObjectMapper.Mapper.Map<IEnumerable<AuthorModel>>(authorList);
             return mapped;
         }
-        public async Task<IEnumerable<AuthorModel>> GetAuthorByGenreList(string genre)
-        {
-            var authorList = await authorRepository.GetByGenreAsync(genre);
-            var mapped = ObjectMapper.Mapper.Map<IEnumerable<AuthorModel>>(authorList);
-            return mapped;
-        }
+        
 
 
     }

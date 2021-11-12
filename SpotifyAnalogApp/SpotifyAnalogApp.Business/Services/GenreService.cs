@@ -2,6 +2,7 @@
 using SpotifyAnalogApp.Business.DTO;
 using SpotifyAnalogApp.Business.Mapper;
 using SpotifyAnalogApp.Business.Services.ServiceInterfaces;
+using SpotifyAnalogApp.Data.Models;
 using SpotifyAnalogApp.Data.Repositiry.Base;
 using System;
 using System.Collections.Generic;
@@ -21,18 +22,19 @@ namespace SpotifyAnalogApp.Business.Services
             this.genreRepository = genreRepository;
         }
 
-        public async Task<IEnumerable<GenreModel>> GetGenreByNameList(string genre)
+        
+
+        public async Task<IEnumerable<GenreModel>> GetGenreList(string genreName)
         {
-            var genreList = await genreRepository.GetGenreByNameList(genre);
-
-            var mapped = ObjectMapper.Mapper.Map<IEnumerable<GenreModel>>(genreList);
-
-            return mapped;
-        }
-
-        public async Task<IEnumerable<GenreModel>> GetGenreList()
-        {
-            var genreList = await genreRepository.GetAllGenresAsync();
+            IEnumerable<Genre> genreList = new List<Genre>();
+            if (genreName != null)
+            {
+                genreList = await genreRepository.GetGenreByNameList(genreName);
+            }
+            else
+            {
+                genreList = await genreRepository.GetAllGenresAsync();
+            }
 
 
             var mapped = ObjectMapper.Mapper.Map<IEnumerable<GenreModel>>(genreList);

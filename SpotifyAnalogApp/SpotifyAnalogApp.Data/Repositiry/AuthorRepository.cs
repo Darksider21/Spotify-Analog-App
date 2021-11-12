@@ -34,5 +34,9 @@ namespace SpotifyAnalogApp.Data.Repositiry
         {
             return await base._dbContext.Authors.Where(x => x.Name.ToLower().Contains(name.ToLower())).Include(x => x.Genre).ToListAsync();
         }
+        public async Task<IEnumerable<Author>> GetByNameAndGenre(string name, string genre)
+        {
+            return await base._dbContext.Authors.Where(x => x.Name.Contains(name) && x.Genre.GenreName.Contains(genre)).Include(x => x.Genre).ToListAsync();
+        }
     }
 }

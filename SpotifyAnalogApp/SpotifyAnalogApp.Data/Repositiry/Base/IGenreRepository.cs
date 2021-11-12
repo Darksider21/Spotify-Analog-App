@@ -13,5 +13,7 @@ namespace SpotifyAnalogApp.Data.Repositiry.Base
 
         public Task<IEnumerable<Genre>> GetGenreByNameList(string name);
 
+        
+
     }
 }
