@@ -23,9 +23,10 @@ namespace SpotifyAnalogApp.Data.Repositiry
             await AddAsync(playlis);
         }
 
-        public async Task DeletePlaylist(Playlist playlis)
+        public async Task DeletePlaylist(int playlistId)
         {
-            await DeleteAsync(playlis);
+            var playlist =  await GetPlaylistById(playlistId);
+            await DeleteAsync(playlist);
         }
 
         public async Task<Playlist> GetPlaylistById(int playlistId)
@@ -45,6 +46,7 @@ namespace SpotifyAnalogApp.Data.Repositiry
 
         public async Task UpdatePlaylist(Playlist playlis)
         {
+
             await UpdateAsync(playlis);
         }
     }

@@ -15,5 +15,7 @@ namespace SpotifyAnalogApp.Business.Services.ServiceInterfaces
 
         public Task<PlaylistModel> CreatePlaylist(int userId, int[] songsid, string playlistName);
         public Task<PlaylistModel> ModifyPlaylist(string action, int playlistId, int[] songsid, string playlistName);
+
+        public Task DeletePlaylist(int playlistId);
     }
 }

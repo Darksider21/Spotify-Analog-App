@@ -22,6 +22,7 @@ namespace SpotifyAnalogApp.Data.Data
         public DbSet<User> Users { get; set; }
 
         public DbSet<Playlist> Playlists { get; set; }
+        public DbSet<Analytics> Analytics { get; set; }
 
 
     }

@@ -19,7 +19,7 @@ namespace SpotifyAnalogApp.Data.Repositiry.Base
 
         public Task UpdatePlaylist(Playlist playlis);
 
-        public Task DeletePlaylist(Playlist playlis);
+        public Task DeletePlaylist(int playlistId);
 
 
 

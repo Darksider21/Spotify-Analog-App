@@ -16,17 +16,19 @@ namespace SpotifyAnalogApp.Business.Services
 
         private IUserRepository userRepository;
         private ISongRepository songRepository;
+        private IPlaylistRepository playlistRepository;
 
 
-        public UserService(IUserRepository userRepo , ISongRepository songRepo)
+        public UserService(IUserRepository userRepo , ISongRepository songRepo , IPlaylistRepository playlistRepo)
         {
             songRepository = songRepo;
             userRepository = userRepo;
+            playlistRepository = playlistRepo;
         }
         public  async  Task<UserModel> CreateUser(string name, string Email)
         {
             var now = DateTime.Now;
-            var user = new User { Name = name, Email = Email, DateCreated = now };
+            var user = new User { Name = name, Email = Email, DateCreated = now , Analytics = new Analytics()};
            await  userRepository.CreateUser(user);
             var mapped = ObjectMapper.Mapper.Map<UserModel>(user);
             return mapped;
@@ -34,6 +36,11 @@ namespace SpotifyAnalogApp.Business.Services
 
         public async Task DeleteUser(int userId)
         {
+            var usersPlaylistsToDelete = await playlistRepository.GetPlaylistsByUserId(new int[] { userId});
+            foreach (var playlist in usersPlaylistsToDelete)
+            {
+                await playlistRepository.DeletePlaylist(playlist.PlaylistId);
+            }
             await userRepository.DeleteUser(userId);
         }
 

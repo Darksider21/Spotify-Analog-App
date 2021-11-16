@@ -85,5 +85,15 @@ namespace SpotifyAnalogApp.Business.Services
             await playlistRepository.UpdatePlaylist(newPlaylist);
             return ObjectMapper.Mapper.Map<PlaylistModel>(newPlaylist);
         }
+
+        public async Task DeletePlaylist(int playlistId)
+        {
+            var playlist = await GetPlaylistById(playlistId);
+            if ( playlist !=null )
+            {
+                await playlistRepository.DeletePlaylist(playlistId);
+
+            }
+        }
     }
 }

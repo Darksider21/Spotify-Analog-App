@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using SpotifyAnalogApp.Business.DTO;
 using SpotifyAnalogApp.Business.Services.ServiceInterfaces;
 using System;
 using System.Collections.Generic;
@@ -42,35 +43,9 @@ namespace SpotifyAnalogApp.Web.Controllers
 
         }
 
-        [Route("songbyauthorname")]
-        [HttpGet]
-        public async Task<IActionResult> GetAllSongsBuAuthorName(string name)
-        {
-            if (name == null)
-            {
-                return BadRequest();
-            }
+        
 
-            var songs = await songService.GetSongsByAuthorName(name);
-
-            return Ok(songs);
-
-        }
-
-        [Route("songsbygenrename")]
-        [HttpGet]
-        public async Task<IActionResult> GetAllSongsByGenreName(string name)
-        {
-
-            if (name == null)
-            {
-                return BadRequest();
-            }
-            var songs = await songService.GetSongsByGenreName(name);
-
-            return Ok(songs);
-
-        }
+        
 
         [Route("songbyid")]
         [HttpGet]
@@ -85,82 +60,24 @@ namespace SpotifyAnalogApp.Web.Controllers
             return Ok(songs);
 
         }
-
-        [Route("songsByMultipleAuthors")]
-        [HttpGet]
-        public async Task<IActionResult> GetAllSongsByMultipleAuthors([FromQuery] string[] authors)
+        [HttpPost]
+        [Route("songsByAuthorsAndGenres")]
+        public async Task<IActionResult> GetSongsByAuthorsAndGenres([FromBody]AuthorGenreDTO authorGenreDTO)
         {
-            if (authors == null)
+            if (authorGenreDTO.Authors == null && authorGenreDTO.Genres== null)
             {
-                return BadRequest();
+                return StatusCode(422);
             }
-
-            var songs = await songService.GetSongsByMultipleAuthors(authors);
-
+            var songs = await songService.GetSongsByAuthorsAndGenres(authorGenreDTO);
             return Ok(songs);
-
         }
 
-        [Route("songsByMultipleGenres")]
-        [HttpGet]
-        public async Task<IActionResult> GetAllSongsByMultipleGenres([FromQuery]string[] genres)
+        [HttpPost]
+        [Route("randomSongsByAuthorsAndGenres")]
+        public async Task<IActionResult> GetRandomSongsByAuthorsAndGenres(int amountOfSongs, [FromBody] AuthorGenreDTO authorGenreDTO)
         {
-            if (genres == null)
-            {
-                return BadRequest();
-            }
-            var songs = await songService.GetSongsByMultipleGenres(genres);
-
-            return Ok(songs);
-
-        }
-
-        [Route("getRandomSongs")]
-        [HttpGet]
-        public async Task<IActionResult> GetRandomSongs(int amountOfSongs)
-        {
-
-            if (String.IsNullOrEmpty(amountOfSongs.ToString()))
-            {
-                return BadRequest();
-            }
-
-            var songs = await songService.GetRandomSongsList(amountOfSongs);
-
-            return Ok(songs);
-
-        }
-
-        [Route("getRandomSongsByGenre")]
-        [HttpGet]
-        public async Task<IActionResult> GetRandomSongsByGenre(int amountOfSongs, [FromQuery]string[] genres)
-        {
-
-            if (String.IsNullOrEmpty(amountOfSongs.ToString()) || genres == null)
-            {
-                return BadRequest();
-            }
-
-            var songs = await songService.GetRandomSongsListByGenres(amountOfSongs, genres);
-
-            return Ok(songs);
-
-        }
-
-        [Route("getRandomSongsByAuthor")]
-        [HttpGet]
-        public async Task<IActionResult> GetRandomSongsByAuthor(int amountOfSongs, [FromQuery]string[] authors)
-        {
-
-            if (String.IsNullOrEmpty(amountOfSongs.ToString()) || authors == null)
-            {
-                return BadRequest();
-            }
-
-            var songs = await songService.GetRandomSongsListByAuthors(amountOfSongs, authors);
-
-            return Ok(songs);
-
+            var randomSongs = await songService.GetRandomSongsByAuthorsAndGenres(amountOfSongs, authorGenreDTO);
+            return Ok(randomSongs);
         }
 
     }

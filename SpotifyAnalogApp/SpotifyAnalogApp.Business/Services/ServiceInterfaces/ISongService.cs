@@ -13,17 +13,9 @@ namespace SpotifyAnalogApp.Business.Services.ServiceInterfaces
         Task<IEnumerable<SongModel>> GetSongsWithAuthorsList();
         Task<SongModel> GetSongById(int songId);
 
-        Task<IEnumerable<SongModel>> GetSongsByAuthorName(string authorName);
-        Task<IEnumerable<SongModel>> GetSongsByMultipleAuthors(string[] authorsNames);
+        Task<IEnumerable<SongModel>> GetSongsByAuthorsAndGenres(AuthorGenreDTO dto);
 
-        Task<IEnumerable<SongModel>> GetSongsByGenreName(string GenreName);
-        Task<IEnumerable<SongModel>> GetSongsByMultipleGenres(string[] GenreNames);
-
-        Task<IEnumerable<SongModel>> GetRandomSongsList(int amountOfSongs);
-
-        Task<IEnumerable<SongModel>> GetRandomSongsListByGenres(int amountOfSongs , string[] genreNames);
-
-        Task<IEnumerable<SongModel>> GetRandomSongsListByAuthors(int amountOfSongs , string[] authorNames);
+        Task<IEnumerable<SongModel>> GetRandomSongsByAuthorsAndGenres(int amountOfSongs, AuthorGenreDTO dto);
 
 
 

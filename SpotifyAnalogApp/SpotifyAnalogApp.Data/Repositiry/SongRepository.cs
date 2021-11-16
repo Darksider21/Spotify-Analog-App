@@ -26,35 +26,39 @@ namespace SpotifyAnalogApp.Data.Repositiry
         public async Task<Song> GetSongById(int id)
         {
 
-            return await base._dbContext.Songs.Where(x => x.SongId == id).Include(x => x.Author.Genre).FirstOrDefaultAsync();
+            return await base._dbContext.Songs.Where(x => x.SongId == id)
+                .Include(x => x.Author).Include(x => x.Genre).FirstOrDefaultAsync();
         }
         public async Task<IEnumerable<Song>> GetSongsByIds(int[] songIds)
         {
-            return await _dbContext.Songs.Where(x => songIds.Contains(x.SongId)).ToListAsync();
+            return await _dbContext.Songs.Where(x => songIds.Contains(x.SongId))
+                .Include(x => x.Author).Include(x => x.Genre).ToListAsync();
         }
 
-        public async Task<IEnumerable<Song>> GetSongsByAuthorName(string name)
-        {
-            return await GetAsync(x => x.Author.Name.ToLower().Contains(name));
-        }
+        
 
-        public async Task<IEnumerable<Song>> GetSongsByGenreName(string genre)
-        {
-            return await GetAsync(x => x.Genre.GenreName.ToLower().Contains(genre));
-        }
+        
 
 
         public async  Task<IEnumerable<Song>> GetSongsByMultipleGenres(string[] genres)
         {
 
-            return await base._dbContext.Songs.Where(x => genres.Contains(x.Genre.GenreName)).ToListAsync();
+            return await base._dbContext.Songs.Where(x => genres.Contains(x.Genre.GenreName))
+                .Include(x => x.Author).Include(x => x.Genre).ToListAsync();
         }
 
         public async Task<IEnumerable<Song>> GetSongsByMultipleAuthors(string[] names)
         {
 
-            return await base._dbContext.Songs.Where(x => names.Contains(x.Author.Name)).ToListAsync();
+            return await base._dbContext.Songs.Where(x => names.Contains(x.Author.Name))
+                .Include(x => x.Author).Include(x => x.Genre).ToListAsync();
 
+        }
+
+        public async Task<IEnumerable<Song>> GetSongsByGenresAndAuthors(string[] genres , string[] authors)
+        {
+            return await base._dbContext.Songs.Where(x => genres.Contains(x.Genre.GenreName) && authors.Contains(x.Author.Name))
+                .Include(x => x.Author.Genre).ToListAsync();
         }
 
         public async Task<IEnumerable<Song>> GetSongWithAuthorsListAsync()
@@ -63,20 +67,32 @@ namespace SpotifyAnalogApp.Data.Repositiry
         }
 
 
-        // Guid.NewGuid() generate random number every execution and EntityFramework know how to handle it
+        // Guid.NewGuid() generate random number every execution and EntityFramework know how to handle it unlike Random.next()
         public async Task<IEnumerable<Song>> GetRandomSongsListAsync(int amountOfSongs)
         {
-           return await base._dbContext.Songs.OrderBy(_ => Guid.NewGuid()).Take(amountOfSongs).ToListAsync();
+           return await base._dbContext.Songs.OrderBy(_ => Guid.NewGuid()).Take(amountOfSongs)
+                .Include(x => x.Author).Include(x => x.Genre).ToListAsync();
         }
 
         public async Task<IEnumerable<Song>> GetRandomSongsByGenresListAsync(int amountOfSongs, string[] genreNames)
         {
-            return await base._dbContext.Songs.Where(x => genreNames.Contains(x.Genre.GenreName)).OrderBy(_ => Guid.NewGuid()).Take(amountOfSongs).ToListAsync();
+            return await base._dbContext.Songs.Where(x => genreNames.Contains(x.Genre.GenreName)).OrderBy(_ => Guid.NewGuid())
+                .Include(x => x.Author).Include(x => x.Genre)
+                .Take(amountOfSongs).ToListAsync();
         }
 
         public async Task<IEnumerable<Song>> GetRandomSongsByAuthorsListAsync(int amountOfSongs, string[] authorNames)
         {
-            return await base._dbContext.Songs.Where(x => authorNames.Contains(x.Author.Name)).OrderBy(_ => Guid.NewGuid()).Take(amountOfSongs).ToListAsync();
+            return await base._dbContext.Songs.Where(x => authorNames.Contains(x.Author.Name)).OrderBy(_ => Guid.NewGuid())
+                .Include(x => x.Author).Include(x => x.Genre)
+                .Take(amountOfSongs).ToListAsync();
+        }
+
+        public async Task<IEnumerable<Song>> GetRandomSongsByAuthorsAndGenresAsync(int amountOfSongs, string[] authorNames, string[] genreNames)
+        {
+            return await base._dbContext.Songs.Where(x => authorNames.Contains(x.Author.Name) && genreNames.Contains(x.Genre.GenreName)).OrderBy(_ => Guid.NewGuid())
+                .Include(x => x.Author).Include(x => x.Genre)
+                .Take(amountOfSongs).ToListAsync();
         }
     }
 }

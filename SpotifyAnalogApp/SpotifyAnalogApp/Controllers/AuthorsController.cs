@@ -32,6 +32,27 @@ namespace SpotifyAnalogApp.Web.Controllers
 
         }
 
+        //Here lies randomness test for Guid.NewGuid()
+        // It Passed!
+        
+        //[HttpGet]
+        //[Route("GuidRandomnessTest")]
+        //public async Task<IActionResult> StartGuidRandomnessTest()
+        //{
+            
+        //    int[] numbers = new int[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 ,11,12,13,14,15,16 };
+        //    List<int> numbersList = new List<int>();
+        //    for (int i = 0; i < 10000000; i++)
+        //    {
+                
+        //        var number = numbers.OrderBy(_ => Guid.NewGuid()).FirstOrDefault();
+        //        numbersList.Add(number);
+        //    }
+        //    var Results = numbersList.GroupBy(x => x).Select(g => new { Value = g.Key, Count = g.Count() }).OrderBy(x => x.Count);
+            
+        //    return Ok(Results);
+        //}
+
         
     }
 }
