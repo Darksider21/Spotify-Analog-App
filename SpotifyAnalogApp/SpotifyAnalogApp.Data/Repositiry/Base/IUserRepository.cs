@@ -10,12 +10,12 @@ namespace SpotifyAnalogApp.Data.Repositiry.Base
    public interface IUserRepository
     {
 
-        public Task<IEnumerable<User>> GetUsersListAsync();
-        public Task<User> GetUserById(int id);
+        public Task<IEnumerable<AppUser>> GetUsersListAsync();
+        public Task<AppUser> GetUserById(int id);
 
-        public Task CreateUser(User user);
+        public Task CreateUser(AppUser user);
         public Task DeleteUser(int id);
-        public Task UpdateUser(User user);
+        public Task UpdateUser(AppUser user);
 
 
        

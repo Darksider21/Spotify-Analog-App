@@ -25,12 +25,12 @@ namespace SpotifyAnalogApp.Business.Services
             userRepository = userRepo;
             playlistRepository = playlistRepo;
         }
-        public  async  Task<UserModel> CreateUser(string name, string Email)
+        public  async  Task<AppUserModel> CreateUser(string name, string Email)
         {
             var now = DateTime.Now;
-            var user = new User { Name = name, Email = Email, DateCreated = now , Analytics = new Analytics()};
+            var user = new AppUser { Name = name, Email = Email, DateCreated = now , Analytics = new Analytics()};
            await  userRepository.CreateUser(user);
-            var mapped = ObjectMapper.Mapper.Map<UserModel>(user);
+            var mapped = ObjectMapper.Mapper.Map<AppUserModel>(user);
             return mapped;
         }
 
@@ -44,21 +44,21 @@ namespace SpotifyAnalogApp.Business.Services
             await userRepository.DeleteUser(userId);
         }
 
-        public  async Task<UserModel> GetUserById(int userId)
+        public  async Task<AppUserModel> GetUserById(int userId)
         {
             var user = await userRepository.GetUserById(userId);
-            var mapped = ObjectMapper.Mapper.Map<UserModel>(user);
+            var mapped = ObjectMapper.Mapper.Map<AppUserModel>(user);
             return mapped;
         }
 
-        public async  Task<ICollection<UserModel>> GetUsers()
+        public async  Task<ICollection<AppUserModel>> GetUsers()
         {
             var users = await userRepository.GetUsersListAsync();
-            var mapped = ObjectMapper.Mapper.Map<ICollection<UserModel>>(users);
+            var mapped = ObjectMapper.Mapper.Map<ICollection<AppUserModel>>(users);
             return mapped;
         }
 
-        public  async Task<UserModel> ModifyFavorites(string action, int userId, int[] songsIds)
+        public  async Task<AppUserModel> ModifyFavorites(string action, int userId, int[] songsIds)
         {
             var songsToWorkWith =  await songRepository.GetSongsByIds(songsIds);
             var user = await userRepository.GetUserById(userId);
@@ -80,23 +80,23 @@ namespace SpotifyAnalogApp.Business.Services
             }
             newSongs = newSongs.Distinct().ToList();
             var model = new ModifyUserModel { FavoriteSongs = newSongs };
-            var newUser = ObjectMapper.Mapper.Map<ModifyUserModel, User>(model, user);
+            var newUser = ObjectMapper.Mapper.Map<ModifyUserModel, AppUser>(model, user);
 
             await userRepository.UpdateUser(newUser);
-            var mapped = ObjectMapper.Mapper.Map<UserModel>(newUser);
+            var mapped = ObjectMapper.Mapper.Map<AppUserModel>(newUser);
             return mapped;
         }
 
-        public async  Task<UserModel> UpdateUserInfo(string name, string Email, int userId)
+        public async  Task<AppUserModel> UpdateUserInfo(string name, string Email, int userId)
         {
             var currentuser = await userRepository.GetUserById(userId);
 
             ModifyUserModel model = new ModifyUserModel { Name = name, Email = Email };
 
-            var newUser = ObjectMapper.Mapper.Map<ModifyUserModel, User>(model, currentuser);
+            var newUser = ObjectMapper.Mapper.Map<ModifyUserModel, AppUser>(model, currentuser);
 
             await userRepository.UpdateUser(newUser);
-            var mapped = ObjectMapper.Mapper.Map<UserModel>(newUser);
+            var mapped = ObjectMapper.Mapper.Map<AppUserModel>(newUser);
             return mapped;
         }
     }

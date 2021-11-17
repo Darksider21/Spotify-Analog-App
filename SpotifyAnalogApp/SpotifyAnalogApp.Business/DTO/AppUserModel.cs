@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace SpotifyAnalogApp.Business.DTO
 {
-    public class UserModel
+    public class AppUserModel
     {
         public int UserId { get; set; }
 

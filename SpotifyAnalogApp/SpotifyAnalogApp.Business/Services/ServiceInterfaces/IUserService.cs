@@ -10,15 +10,15 @@ namespace SpotifyAnalogApp.Business.Services.ServiceInterfaces
 {
     public interface IUserService
     {
-        public Task<ICollection<UserModel>> GetUsers();
+        public Task<ICollection<AppUserModel>> GetUsers();
 
-        public Task<UserModel> GetUserById(int userId);
+        public Task<AppUserModel> GetUserById(int userId);
 
-        public Task<UserModel> CreateUser(string name, string Email);
+        public Task<AppUserModel> CreateUser(string name, string Email);
 
-        public Task<UserModel> UpdateUserInfo(string name, string Email, int userId);
+        public Task<AppUserModel> UpdateUserInfo(string name, string Email, int userId);
 
-        public Task<UserModel> ModifyFavorites(string action, int userId, int[] songsIds);
+        public Task<AppUserModel> ModifyFavorites(string action, int userId, int[] songsIds);
 
         public Task DeleteUser(int userId);
 
