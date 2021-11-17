@@ -5,7 +5,7 @@ using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using SpotifyAnalogApp.Business.DTO.RequestDto;
 using SpotifyAnalogApp.Business.DTO.ResponceDTOs;
-using SpotifyAnalogApp.Web.Configurations;
+using SpotifyAnalogApp.Business.Configurations;
 using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
@@ -43,8 +43,7 @@ namespace SpotifyAnalogApp.Web.Controllers
                         Result = false,
                         Errors = new List<string>(){
                                             "Email already exist"
-                                        }
-                    });
+                        }});
                 }
 
                 var newUser = new IdentityUser() { Email = userRequest.Email, UserName = userRequest.Email };
@@ -63,8 +62,7 @@ namespace SpotifyAnalogApp.Web.Controllers
                 {
                     Result = false,
                     Errors = isCreated.Errors.Select(x => x.Description).ToList()
-                }
-                    )
+                })
                 { StatusCode = 500 };
             }
 
@@ -80,7 +78,7 @@ namespace SpotifyAnalogApp.Web.Controllers
 
         [HttpPost]
         [Route("Login")]
-        public async Task<IActionResult> Login([FromBody] UserLoginRequest userRequest)
+        public async Task<IActionResult> Login([FromBody] UserLoginRequestDTO userRequest)
         {
             if (ModelState.IsValid)
             {
@@ -124,8 +122,7 @@ namespace SpotifyAnalogApp.Web.Controllers
                 Result = false,
                 Errors = new List<string>(){
                                         "Invalid payload"
-                                    }
-            });
+                }});
         }
 
 

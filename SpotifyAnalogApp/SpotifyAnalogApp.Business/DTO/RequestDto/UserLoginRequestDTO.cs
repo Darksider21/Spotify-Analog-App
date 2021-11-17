@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace SpotifyAnalogApp.Business.DTO.RequestDto
 {
-    public class UserLoginRequest
+    public class UserLoginRequestDTO
     {
         [Required]
         public string Email { get; set; }
