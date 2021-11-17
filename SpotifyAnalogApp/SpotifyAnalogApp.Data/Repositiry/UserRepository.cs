@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace SpotifyAnalogApp.Data.Repositiry
 {
-    public class UserRepository : Repository<User>, IUserRepository
+    public class UserRepository : Repository<AppUser>, IUserRepository
     {
         public UserRepository(SpotifyAnalogAppContext dbContext) : base(dbContext)
         {
@@ -20,7 +20,7 @@ namespace SpotifyAnalogApp.Data.Repositiry
 
         
 
-        public async Task CreateUser(User user)
+        public async Task CreateUser(AppUser user)
         {
             await AddAsync(user);
         }
@@ -31,19 +31,19 @@ namespace SpotifyAnalogApp.Data.Repositiry
             await DeleteAsync(user);
         }
 
-        public async Task<User> GetUserById(int id)
+        public async Task<AppUser> GetUserById(int id)
         {
-            return await _dbContext.Users.Where(x => x.UserId.Equals(id)).Include(x => x.UsersPlaylists).ThenInclude(x => x.SongsInPlaylist).Include(x => x.FavoriteSongs).FirstOrDefaultAsync();
+            return await _dbContext.AppUsers.Where(x => x.AppUserId.Equals(id)).Include(x => x.UsersPlaylists).ThenInclude(x => x.SongsInPlaylist).Include(x => x.FavoriteSongs).FirstOrDefaultAsync();
         }
 
-        public async Task<IEnumerable<User>> GetUsersListAsync()
+        public async Task<IEnumerable<AppUser>> GetUsersListAsync()
         {
             return await GetAllAsync();
         }
 
         
 
-        public async  Task UpdateUser(User user)
+        public async  Task UpdateUser(AppUser user)
         {
            await UpdateAsync(user);
         }

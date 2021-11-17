@@ -3,12 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using SpotifyAnalogApp.Data.Models;
 
 namespace SpotifyAnalogApp.Data.Data
 {
-   public class SpotifyAnalogAppContext :DbContext
+   public class SpotifyAnalogAppContext : IdentityDbContext
     {
         public SpotifyAnalogAppContext(DbContextOptions options) : base(options)
         {
@@ -19,7 +20,7 @@ namespace SpotifyAnalogApp.Data.Data
         public DbSet<Author> Authors { get; set; }
         public DbSet<Song> Songs { get; set; }
 
-        public DbSet<User> Users { get; set; }
+        public DbSet<AppUser> AppUsers { get; set; }
 
         public DbSet<Playlist> Playlists { get; set; }
         public DbSet<Analytics> Analytics { get; set; }

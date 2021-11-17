@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 
 namespace SpotifyAnalogApp.Data.Models
 {
-    public class User
+    public class AppUser
     {
-        public int UserId { get; set; }
+        public int AppUserId { get; set; }
 
         [Required]
         public string Name { get; set; }

@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using SpotifyAnalogApp.Business.Services.ServiceInterfaces;
 using SpotifyAnalogApp.Data.Repositiry.Base;
@@ -9,14 +11,15 @@ using System.Threading.Tasks;
 
 namespace SpotifyAnalogApp.Web.Controllers
 {
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     [Route("api/[controller]")]
     [ApiController]
-    public class UsersController : ControllerBase
+    public class AppUsersController : ControllerBase
     {
         private IUserService userService;
         private IPlaylistService playlistService;
 
-       public  UsersController(IUserService userService, IPlaylistService playlistService)
+       public  AppUsersController(IUserService userService, IPlaylistService playlistService)
         {
             this.userService = userService;
             this.playlistService = playlistService;
