@@ -1,4 +1,5 @@
 ﻿using SpotifyAnalogApp.Business.DTO;
+using SpotifyAnalogApp.Business.DTO.RequestDto;
 using SpotifyAnalogApp.Data.Models;
 using System;
 using System.Collections.Generic;
@@ -16,9 +17,10 @@ namespace SpotifyAnalogApp.Business.Services.ServiceInterfaces
 
         public Task<AppUserModel> CreateUser(string name, string Email);
 
-        public Task<AppUserModel> UpdateUserInfo(string name, string Email, int userId);
+        public Task<AppUserModel> UpdateUserInfo(RequestUserModel userModel);
 
-        public Task<AppUserModel> ModifyFavorites(string action, int userId, int[] songsIds);
+        public Task<AppUserModel> AddSongsToUsersFavorites(int userId, int[] songsIds);
+        public Task<AppUserModel> RemoveSongsFromUsersFavorites(int userId, int[] songsIds);
 
         public Task DeleteUser(int userId);
 

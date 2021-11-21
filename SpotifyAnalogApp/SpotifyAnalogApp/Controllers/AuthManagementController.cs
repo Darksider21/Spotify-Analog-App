@@ -311,7 +311,8 @@ namespace SpotifyAnalogApp.Web.Controllers
                     {
                         Success = false,
                         Errors = new List<string>() {
-                            "Something went wrong."
+                            "Something went wrong.",
+                            ex.Message
                         }
                     };
                 

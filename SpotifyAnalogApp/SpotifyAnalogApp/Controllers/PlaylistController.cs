@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using SpotifyAnalogApp.Business.DTO.RequestDto;
 using SpotifyAnalogApp.Business.Services.ServiceInterfaces;
 using System;
 using System.Collections.Generic;
@@ -10,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace SpotifyAnalogApp.Web.Controllers
 {
-    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     [Route("api/[controller]")]
     [ApiController]
     public class PlaylistController : ControllerBase
@@ -52,10 +53,17 @@ namespace SpotifyAnalogApp.Web.Controllers
             return Ok(playlist);
         }
         [HttpPost]
-        [Route("modifyPlaylist")]
-        public async Task<IActionResult> ModifyPlaylist(string action, int playlistId, string playlistName, [FromQuery] int[] songIds)
+        [Route("AddSongsToPlaylist")]
+        public async Task<IActionResult> AddSongsToPlaylist([FromBody]RequestPlaylistModel playlistModel)
         {
-            var playlist = await playlistService.ModifyPlaylist(action, playlistId, songIds, playlistName);
+            var playlist = await playlistService.AddSongsToPlaylist(playlistModel);
+            return Ok(playlist);
+        }
+        [HttpPost]
+        [Route("RemoveSongsFromPlaylist")]
+        public async Task<IActionResult> RemoveSongsFromPlaylist([FromBody] RequestPlaylistModel playlistModel)
+        {
+            var playlist = await playlistService.RemoveSongsFromPlaylist(playlistModel);
             return Ok(playlist);
         }
 
@@ -65,12 +73,13 @@ namespace SpotifyAnalogApp.Web.Controllers
         {
             if (string.IsNullOrEmpty(playlistId.ToString()))
             {
-                return StatusCode(422);
+                return BadRequest("Invalid id");
             }
 
             await playlistService.DeletePlaylist(playlistId);
             return NoContent();
         }
+        
 
     }
 }

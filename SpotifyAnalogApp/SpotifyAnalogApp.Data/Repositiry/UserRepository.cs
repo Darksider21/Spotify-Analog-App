@@ -28,7 +28,11 @@ namespace SpotifyAnalogApp.Data.Repositiry
         public async Task DeleteUser(int userId)
         {
             var user = await GetUserById(userId);
-            await DeleteAsync(user);
+            if (user != null)
+            {
+                await DeleteAsync(user);
+            }
+            
         }
 
         public async Task<AppUser> GetUserById(int id)

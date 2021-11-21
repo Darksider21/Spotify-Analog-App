@@ -1,4 +1,5 @@
 ﻿using SpotifyAnalogApp.Business.DTO;
+using SpotifyAnalogApp.Business.DTO.RequestDto;
 using SpotifyAnalogApp.Business.Mapper;
 using SpotifyAnalogApp.Business.Services.ServiceInterfaces;
 using SpotifyAnalogApp.Data.Models;
@@ -57,27 +58,34 @@ namespace SpotifyAnalogApp.Business.Services
             var mapped = ObjectMapper.Mapper.Map<ICollection<AppUserModel>>(users);
             return mapped;
         }
+        public async Task<AppUserModel> AddSongsToUsersFavorites(int userId, int[] songsIds)
+        {
+            var songsToWorkWith = await songRepository.GetSongsByIds(songsIds);
+            var user = await userRepository.GetUserById(userId);
+            var usersSongs = user.FavoriteSongs;
+            List<Song> newSongs = new List<Song>() { };
+            newSongs.AddRange(songsToWorkWith);
+            newSongs = newSongs.Distinct().ToList();
+            var model = new ModifyUserModel { FavoriteSongs = newSongs };
+            var newUser = ObjectMapper.Mapper.Map<ModifyUserModel, AppUser>(model, user);
 
-        public  async Task<AppUserModel> ModifyFavorites(string action, int userId, int[] songsIds)
+            await userRepository.UpdateUser(newUser);
+            var mapped = ObjectMapper.Mapper.Map<AppUserModel>(newUser);
+            return mapped;
+
+
+        }
+
+        public  async Task<AppUserModel> RemoveSongsFromUsersFavorites(int userId, int[] songsIds)
         {
             var songsToWorkWith =  await songRepository.GetSongsByIds(songsIds);
             var user = await userRepository.GetUserById(userId);
             var usersSongs = user.FavoriteSongs;
             List<Song> newSongs = new List<Song>() { };
             newSongs.AddRange(usersSongs);
-
-            if (action == "add")
-            {
-                newSongs.AddRange(songsToWorkWith);
-            }
-            else if (action == "remove")
-            {
-               newSongs = newSongs.Except(songsToWorkWith).ToList();
-            }
-            else
-            {
-                throw new Exception("Action Name is not valid ");
-            }
+            newSongs = newSongs.Except(songsToWorkWith).ToList();
+           
+            
             newSongs = newSongs.Distinct().ToList();
             var model = new ModifyUserModel { FavoriteSongs = newSongs };
             var newUser = ObjectMapper.Mapper.Map<ModifyUserModel, AppUser>(model, user);
@@ -87,11 +95,11 @@ namespace SpotifyAnalogApp.Business.Services
             return mapped;
         }
 
-        public async  Task<AppUserModel> UpdateUserInfo(string name, string Email, int userId)
+        public async Task<AppUserModel> UpdateUserInfo(RequestUserModel userModel)
         {
-            var currentuser = await userRepository.GetUserById(userId);
+            var currentuser = await userRepository.GetUserById(userModel.AppUserId);
 
-            ModifyUserModel model = new ModifyUserModel { Name = name, Email = Email };
+            ModifyUserModel model = new ModifyUserModel { Name = userModel.Name, Email = userModel.Email };
 
             var newUser = ObjectMapper.Mapper.Map<ModifyUserModel, AppUser>(model, currentuser);
 

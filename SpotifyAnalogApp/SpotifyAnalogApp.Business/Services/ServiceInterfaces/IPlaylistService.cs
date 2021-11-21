@@ -1,4 +1,5 @@
 ﻿using SpotifyAnalogApp.Business.DTO;
+using SpotifyAnalogApp.Business.DTO.RequestDto;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,7 +15,8 @@ namespace SpotifyAnalogApp.Business.Services.ServiceInterfaces
         public Task<IEnumerable<PlaylistModel>> GetPlaylistsByUserId(int[] userId);
 
         public Task<PlaylistModel> CreatePlaylist(int userId, int[] songsid, string playlistName);
-        public Task<PlaylistModel> ModifyPlaylist(string action, int playlistId, int[] songsid, string playlistName);
+        public Task<PlaylistModel> AddSongsToPlaylist(RequestPlaylistModel playlistModel);
+        public Task<PlaylistModel> RemoveSongsFromPlaylist(RequestPlaylistModel playlistModel);
 
         public Task DeletePlaylist(int playlistId);
     }
