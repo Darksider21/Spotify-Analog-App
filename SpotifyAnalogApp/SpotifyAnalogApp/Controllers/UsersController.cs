@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using SpotifyAnalogApp.Business.DTO.RequestDto;
 using SpotifyAnalogApp.Business.Services.ServiceInterfaces;
 using SpotifyAnalogApp.Data.Repositiry.Base;
 using System;
@@ -11,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace SpotifyAnalogApp.Web.Controllers
 {
-    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     [Route("api/[controller]")]
     [ApiController]
     public class AppUsersController : ControllerBase
@@ -58,22 +59,29 @@ namespace SpotifyAnalogApp.Web.Controllers
         
         
 
-        [HttpPatch]
+        [HttpPut]
         [Route("changeUserInfo")]
-        public async Task<IActionResult> UpdateUserInfo(string name , string email, int userId)
+        public async Task<IActionResult> UpdateUserInfo([FromBody] RequestUserModel model)
         {
-            var user = await userService.UpdateUserInfo(name, email, userId);
+            var user = await userService.UpdateUserInfo(model);
 
             return Ok(user);
 
 
         }
 
-        [HttpPatch]
-        [Route("modifyUsersFavorites")]
-        public async Task<IActionResult> ModifyFavorites(string action, int userId , [FromQuery]int[] songIds)
+        [HttpPost]
+        [Route("addsongstousersfavorites")]
+        public async Task<IActionResult> AddSongsToUsersFavorites(int userId , [FromBody]int[] songIds)
         {
-            var user = await userService.ModifyFavorites(action, userId, songIds);
+            var user = await userService.AddSongsToUsersFavorites(userId, songIds);
+            return Ok(user);
+        }
+        [HttpPost]
+        [Route("RemoveSongsFromUsersFavorites")]
+        public async Task<IActionResult> RemoveSongsFromUsersFavorites(int userId, [FromBody] int[] songIds)
+        {
+            var user = await userService.RemoveSongsFromUsersFavorites(userId, songIds);
             return Ok(user);
         }
 
