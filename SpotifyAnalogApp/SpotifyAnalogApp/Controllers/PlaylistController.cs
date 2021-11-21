@@ -51,7 +51,7 @@ namespace SpotifyAnalogApp.Web.Controllers
 
             return Ok(playlist);
         }
-        [HttpPatch]
+        [HttpPost]
         [Route("modifyPlaylist")]
         public async Task<IActionResult> ModifyPlaylist(string action, int playlistId, string playlistName, [FromQuery] int[] songIds)
         {
