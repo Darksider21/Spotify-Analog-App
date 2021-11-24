@@ -15,6 +15,7 @@ namespace SpotifyAnalogApp.Data.Repositiry.Base
         public Task<IEnumerable<Analytics>> GetAllAnalytics();
 
         public Task<Analytics> GetAnalyticsByUserId(int userId);
+        public  Task<IEnumerable<Analytics>> GetAnalyticsByUserIds(int[] userId);
 
     }
 }

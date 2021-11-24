@@ -1,7 +1,9 @@
 ﻿using SpotifyAnalogApp.Business.DTO;
 using SpotifyAnalogApp.Business.DTO.ModificationsDTOs;
+using SpotifyAnalogApp.Business.Mapper;
 using SpotifyAnalogApp.Business.Services.ServiceInterfaces;
 using SpotifyAnalogApp.Data.Models;
+using SpotifyAnalogApp.Data.Repositiry.Base;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,25 +14,71 @@ namespace SpotifyAnalogApp.Business.Services
 {
     public class AnalyticsService : IAnalyticsService
     {
-
-        public AnalyticsService()
+        public IAnalyticsRepository analyticsRepository;
+        public AnalyticsService(IAnalyticsRepository analyticsRepository)
         {
+            this.analyticsRepository = analyticsRepository;
+        }
+
+        public async Task AddSongsToUsersAnalytics(int userId, IEnumerable<Song> songs)
+        {
+            var analyticsToWorkWith = await analyticsRepository.GetAnalyticsByUserId(userId);
+
+            var countedSongs = CountTotalSongsAndTheirGenres(songs);
+
+            analyticsToWorkWith.ClassicalSongsCount += countedSongs.ClassicalSongsCount;
+            analyticsToWorkWith.ElectronicSongsCount += countedSongs.ElectronicSongsCount;
+            analyticsToWorkWith.JazzSongsCount += countedSongs.JazzSongsCount;
+            analyticsToWorkWith.JPopSongsCount += countedSongs.JPopSongsCount;
+            analyticsToWorkWith.MetalSongsCount += countedSongs.MetalSongsCount;
+            analyticsToWorkWith.RockSongsCount += countedSongs.RockSongsCount;
+            analyticsToWorkWith.PopSongsCount += countedSongs.PopSongsCount;
+            analyticsToWorkWith.TotalSongsCount += countedSongs.TotalSongsCount;
+
+            await analyticsRepository.UpdateAnalytics(analyticsToWorkWith);
 
         }
 
-        public Task AddSongsToUsersAnalytics(int userId, IEnumerable<Song> songs)
+        public async Task<IEnumerable<AnalyticsModel>> GetAnalytics(int[] userIds)
         {
-            throw new NotImplementedException();
+            IEnumerable<Analytics> analytics = new List<Analytics>();
+            if (userIds.Any())
+            {
+                analytics = await analyticsRepository.GetAnalyticsByUserIds(userIds);
+            }
+            else
+            {
+                analytics = await analyticsRepository.GetAllAnalytics();
+            }
+
+            return ObjectMapper.Mapper.Map<IEnumerable<AnalyticsModel>>(analytics);
+
+            
+        }
+        public async Task<AnalyticsModel> GetAnalyticsByUserId(int userId)
+        {
+            var analytics = await analyticsRepository.GetAnalyticsByUserId(userId);
+
+            return ObjectMapper.Mapper.Map<AnalyticsModel>(analytics);
+
         }
 
-        public Task<AnalyticsModel> GetAnalyticsByUserId(int userId)
+        public async Task RemoveSongsFromUsersAnalytics(int userId, IEnumerable<Song> songs)
         {
-            throw new NotImplementedException();
-        }
+            var analyticsToWorkWith = await analyticsRepository.GetAnalyticsByUserId(userId);
 
-        public Task RemoveSongsFromUsersAnalytics(int userId, IEnumerable<Song> songs)
-        {
-            throw new NotImplementedException();
+            var countedSongs = CountTotalSongsAndTheirGenres(songs);
+
+            analyticsToWorkWith.ClassicalSongsCount -= countedSongs.ClassicalSongsCount;
+            analyticsToWorkWith.ElectronicSongsCount -= countedSongs.ElectronicSongsCount;
+            analyticsToWorkWith.JazzSongsCount -= countedSongs.JazzSongsCount;
+            analyticsToWorkWith.JPopSongsCount -= countedSongs.JPopSongsCount;
+            analyticsToWorkWith.MetalSongsCount -= countedSongs.MetalSongsCount;
+            analyticsToWorkWith.RockSongsCount -= countedSongs.RockSongsCount;
+            analyticsToWorkWith.PopSongsCount -= countedSongs.PopSongsCount;
+            analyticsToWorkWith.TotalSongsCount -= countedSongs.TotalSongsCount;
+
+            await analyticsRepository.UpdateAnalytics(analyticsToWorkWith);
         }
 
 
@@ -50,5 +98,6 @@ namespace SpotifyAnalogApp.Business.Services
 
             return analytics;
         }
+
     }
 }

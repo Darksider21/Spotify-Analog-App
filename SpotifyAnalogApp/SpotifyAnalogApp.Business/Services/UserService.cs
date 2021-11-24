@@ -1,7 +1,10 @@
 ﻿using SpotifyAnalogApp.Business.DTO;
 using SpotifyAnalogApp.Business.DTO.ModificationsDTOs;
+<<<<<<< main
 using SpotifyAnalogApp.Business.DTO.RequestDto;
 using SpotifyAnalogApp.Business.DTO.RequestDto;
+=======
+>>>>>>> AnalyticsRepositoryAndServiceCreation
 using SpotifyAnalogApp.Business.Mapper;
 using SpotifyAnalogApp.Business.Services.ServiceInterfaces;
 using SpotifyAnalogApp.Data.Models;
