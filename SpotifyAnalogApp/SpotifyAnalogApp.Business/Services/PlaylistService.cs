@@ -17,12 +17,14 @@ namespace SpotifyAnalogApp.Business.Services
         private IPlaylistRepository playlistRepository;
         private ISongRepository songRepository;
         private IUserRepository userRepository;
+        private IAnalyticsService analyticsService;
 
-        public PlaylistService(IPlaylistRepository repository , ISongRepository songRepo, IUserRepository userRepo)
+        public PlaylistService(IPlaylistRepository repository , ISongRepository songRepo, IUserRepository userRepo , IAnalyticsService analyticsService)
         {
             playlistRepository = repository;
             songRepository = songRepo;
             userRepository = userRepo;
+            this.analyticsService = analyticsService;
             
         }
 
@@ -30,8 +32,10 @@ namespace SpotifyAnalogApp.Business.Services
         {
             var SongsToAdd = await songRepository.GetSongsByIds(songsid);
             var user = await userRepository.GetUserById(userId);
+            SongsToAdd = SongsToAdd.Distinct();
             var newPlaylist = new Playlist() { PlaylistName= playlistName , SongsInPlaylist = SongsToAdd.ToList() , User = user};
 
+            await analyticsService.AddSongsToUsersAnalytics(userId,SongsToAdd);
             await playlistRepository.CreatePlaylistForUser(newPlaylist);
 
             var mapped = ObjectMapper.Mapper.Map<PlaylistModel>(newPlaylist);
@@ -71,11 +75,17 @@ namespace SpotifyAnalogApp.Business.Services
             var songsToWorkWith = await songRepository.GetSongsByIds(playlistModel.SongsIds);
             var originalPlaylist = await playlistRepository.GetPlaylistById(playlistModel.PlaylistId);
             List<Song> newSongs = new List<Song>();
+
             newSongs.AddRange(originalPlaylist.SongsInPlaylist);
 
             newSongs.AddRange(songsToWorkWith);
 
             newSongs = newSongs.Distinct().ToList();
+
+            var songsToAddToAnalytics = songsToWorkWith.Except(originalPlaylist.SongsInPlaylist).ToList().Distinct();
+            var userid = originalPlaylist.User.AppUserId;
+            await analyticsService.AddSongsToUsersAnalytics(userid,songsToAddToAnalytics);
+
             var newPlaylistModel = new ModifyPlaylistModel() { SongsInPlaylist = newSongs };
 
             var newPlaylist = ObjectMapper.Mapper.Map<ModifyPlaylistModel, Playlist>(newPlaylistModel, originalPlaylist);
@@ -90,9 +100,14 @@ namespace SpotifyAnalogApp.Business.Services
             List<Song> newSongs = new List<Song>();
             newSongs.AddRange(originalPlaylist.SongsInPlaylist);
 
+            
             newSongs = newSongs.Except(songsToWorkWith).ToList();
-
             newSongs = newSongs.Distinct().ToList();
+
+            var songsToRemoveFromAnalytics = songsToWorkWith.Where(x => originalPlaylist.SongsInPlaylist.Contains(x)).Distinct().ToList();
+            var userId = originalPlaylist.User.AppUserId;
+            await analyticsService.RemoveSongsFromUsersAnalytics(userId ,songsToRemoveFromAnalytics);
+
             var newPlaylistModel = new ModifyPlaylistModel() { SongsInPlaylist = newSongs };
 
             var newPlaylist = ObjectMapper.Mapper.Map<ModifyPlaylistModel, Playlist>(newPlaylistModel, originalPlaylist);

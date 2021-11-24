@@ -31,7 +31,7 @@ namespace SpotifyAnalogApp.Data.Repositiry
 
         public async Task<Playlist> GetPlaylistById(int playlistId)
         {
-            return  await _dbContext.Playlists.Where(x => x.PlaylistId.Equals(playlistId)).Include(x => x.SongsInPlaylist).FirstOrDefaultAsync();
+            return  await _dbContext.Playlists.Where(x => x.PlaylistId.Equals(playlistId)).Include(x => x.SongsInPlaylist).Include(x => x.User).FirstOrDefaultAsync();
         }
 
         public async Task<IEnumerable<Playlist>> GetPlaylists()

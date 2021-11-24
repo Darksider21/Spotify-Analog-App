@@ -68,6 +68,7 @@ namespace SpotifyAnalogApp.Business.Services
             var songsToWorkWith = await songRepository.GetSongsByIds(songsIds);
             var user = await userRepository.GetUserById(userId);
             IEnumerable<Song> usersSongs = new List<Song>();
+
             List<Song> newSongs = new List<Song>() { };
             if (user.FavoriteSongs.Any())
             {
