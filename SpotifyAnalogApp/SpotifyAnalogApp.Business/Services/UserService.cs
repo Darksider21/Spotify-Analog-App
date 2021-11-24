@@ -1,10 +1,6 @@
 ﻿using SpotifyAnalogApp.Business.DTO;
 using SpotifyAnalogApp.Business.DTO.ModificationsDTOs;
-<<<<<<< main
 using SpotifyAnalogApp.Business.DTO.RequestDto;
-using SpotifyAnalogApp.Business.DTO.RequestDto;
-=======
->>>>>>> AnalyticsRepositoryAndServiceCreation
 using SpotifyAnalogApp.Business.Mapper;
 using SpotifyAnalogApp.Business.Services.ServiceInterfaces;
 using SpotifyAnalogApp.Data.Models;
@@ -23,13 +19,15 @@ namespace SpotifyAnalogApp.Business.Services
         private IUserRepository userRepository;
         private ISongRepository songRepository;
         private IPlaylistRepository playlistRepository;
+        private IAnalyticsService analyticsService;
 
 
-        public UserService(IUserRepository userRepo , ISongRepository songRepo , IPlaylistRepository playlistRepo)
+        public UserService(IUserRepository userRepo , ISongRepository songRepo , IPlaylistRepository playlistRepo, IAnalyticsService analyticsService)
         {
             songRepository = songRepo;
             userRepository = userRepo;
             playlistRepository = playlistRepo;
+            this.analyticsService = analyticsService;
         }
         public  async  Task<AppUserModel> CreateUser(string name, string Email)
         {
@@ -47,7 +45,9 @@ namespace SpotifyAnalogApp.Business.Services
             {
                 await playlistRepository.DeletePlaylist(playlist.PlaylistId);
             }
+            var usersAnalytics = await analyticsService.GetAnalyticsByUserId(userId);
             await userRepository.DeleteUser(userId);
+            await analyticsService.DeleteAnalytics(userId);
         }
 
         public  async Task<AppUserModel> GetUserById(int userId)
@@ -67,10 +67,22 @@ namespace SpotifyAnalogApp.Business.Services
         {
             var songsToWorkWith = await songRepository.GetSongsByIds(songsIds);
             var user = await userRepository.GetUserById(userId);
-            var usersSongs = user.FavoriteSongs;
+            IEnumerable<Song> usersSongs = new List<Song>();
             List<Song> newSongs = new List<Song>() { };
+            if (user.FavoriteSongs.Any())
+            {
+                usersSongs = user.FavoriteSongs;
+
+            }
+
+            
+            songsToWorkWith = songsToWorkWith.Except(usersSongs).ToList();
+            newSongs.AddRange(usersSongs);
             newSongs.AddRange(songsToWorkWith);
-            newSongs = newSongs.Distinct().ToList();
+            newSongs.Distinct();
+
+            await analyticsService.AddSongsToUsersAnalytics(userId ,songsToWorkWith);
+            
             var model = new ModifyUserModel { FavoriteSongs = newSongs };
             var newUser = ObjectMapper.Mapper.Map<ModifyUserModel, AppUser>(model, user);
 
@@ -85,13 +97,18 @@ namespace SpotifyAnalogApp.Business.Services
         {
             var songsToWorkWith =  await songRepository.GetSongsByIds(songsIds);
             var user = await userRepository.GetUserById(userId);
-            var usersSongs = user.FavoriteSongs;
+            IEnumerable<Song> usersSongs = user.FavoriteSongs;
+
             List<Song> newSongs = new List<Song>() { };
             newSongs.AddRange(usersSongs);
+
+            songsToWorkWith = songsToWorkWith.Where(x => usersSongs.Contains(x)).Distinct().ToList();
             newSongs = newSongs.Except(songsToWorkWith).ToList();
+            newSongs = newSongs.Distinct().ToList();
+
+            await analyticsService.RemoveSongsFromUsersAnalytics(userId, songsToWorkWith);
            
             
-            newSongs = newSongs.Distinct().ToList();
             var model = new ModifyUserModel { FavoriteSongs = newSongs };
             var newUser = ObjectMapper.Mapper.Map<ModifyUserModel, AppUser>(model, user);
 

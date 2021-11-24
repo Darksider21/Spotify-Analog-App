@@ -19,6 +19,10 @@ namespace SpotifyAnalogApp.Business.Services
         {
             this.analyticsRepository = analyticsRepository;
         }
+        public async Task DeleteAnalytics(int userId)
+        {
+            await analyticsRepository.DeleteAnalytics(userId);
+        }
 
         public async Task AddSongsToUsersAnalytics(int userId, IEnumerable<Song> songs)
         {

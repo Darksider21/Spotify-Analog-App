@@ -15,5 +15,6 @@ namespace SpotifyAnalogApp.Business.Services.ServiceInterfaces
 
         public Task AddSongsToUsersAnalytics(int userId , IEnumerable<Song> songs);
         public Task RemoveSongsFromUsersAnalytics(int userId , IEnumerable<Song> songs);
+        public Task DeleteAnalytics(int userId);
     }
 }

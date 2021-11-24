@@ -22,10 +22,10 @@ namespace SpotifyAnalogApp.Data.Repositiry
 
         public async Task DeleteAnalytics(int userId)
         {
-           var user = await base.GetByIdAsync(userId);
-            if (user != null)
+           var analytics = await GetAnalyticsByUserId(userId);
+            if (analytics != null)
             {
-              await  base.DeleteAsync(user);
+              await  base.DeleteAsync(analytics);
             }
 
         }
@@ -41,7 +41,7 @@ namespace SpotifyAnalogApp.Data.Repositiry
         }
         public async Task<IEnumerable<Analytics>> GetAnalyticsByUserIds(int[] userId)
         {
-            return await _dbContext.Users.Where(x => userId.Contains(x.UserId)).Select(x => x.Analytics).ToListAsync();
+            return await _dbContext.AppUsers.Where(x => userId.Contains(x.AppUserId)).Select(x => x.Analytics).ToListAsync();
         }
 
         public async Task UpdateAnalytics(Analytics obj)
