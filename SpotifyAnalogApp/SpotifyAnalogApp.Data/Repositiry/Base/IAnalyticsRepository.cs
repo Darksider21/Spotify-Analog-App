@@ -9,13 +9,16 @@ namespace SpotifyAnalogApp.Data.Repositiry.Base
 {
    public interface IAnalyticsRepository
     {
-        public Task DeleteAnalytics(int userId);
-        public Task UpdateAnalytics(Analytics obj);
+        public Task DeleteAnalyticsAsync(int userId);
+        public Task UpdateAnalyticsAsync(GenreAnalytics obj);
+        public Task UpdateMultipleAnalyticsAsync(IEnumerable<GenreAnalytics> obj);
 
-        public Task<IEnumerable<Analytics>> GetAllAnalytics();
+        public Task CreateAnalyticsForUserAsync(GenreAnalytics analytics);
+        public Task CreateMultipleAnalyticsForUserAsync(IEnumerable<GenreAnalytics> analytics);
 
-        public Task<Analytics> GetAnalyticsByUserId(int userId);
-        public  Task<IEnumerable<Analytics>> GetAnalyticsByUserIds(int[] userId);
+
+        public Task<IEnumerable<GenreAnalytics>> GetAnalyticsByUserIdAsync(int userId);
+        public  Task<IEnumerable<GenreAnalytics>> GetAnalyticsByUserIdsAsync(int[] userIds);
 
     }
 }

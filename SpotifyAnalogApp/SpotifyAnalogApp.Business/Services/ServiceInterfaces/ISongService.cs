@@ -9,13 +9,13 @@ namespace SpotifyAnalogApp.Business.Services.ServiceInterfaces
 {
     public interface ISongService
     {
-        Task<IEnumerable<SongModel>> GetSongList();
-        Task<IEnumerable<SongModel>> GetSongsWithAuthorsList();
-        Task<SongModel> GetSongById(int songId);
+        Task<IEnumerable<SongModel>> GetSongListAsync();
+        Task<IEnumerable<SongModel>> GetSongsWithAuthorsListAsync();
+        Task<SongModel> GetSongByIdAsync(int songId);
 
-        Task<IEnumerable<SongModel>> GetSongsByAuthorsAndGenres(AuthorGenreDTO dto);
+        Task<IEnumerable<SongModel>> GetSongsByAuthorsAndGenresAsync(AuthorGenreDTO dto);
 
-        Task<IEnumerable<SongModel>> GetRandomSongsByAuthorsAndGenres(int amountOfSongs, AuthorGenreDTO dto);
+        Task<IEnumerable<SongModel>> GetRandomSongsByAuthorsAndGenresAsync(int amountOfSongs, AuthorGenreDTO dto);
 
 
 

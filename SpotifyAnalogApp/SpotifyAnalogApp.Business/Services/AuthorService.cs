@@ -23,7 +23,7 @@ namespace SpotifyAnalogApp.Business.Services
 
        
 
-        public async Task<IEnumerable<AuthorModel>> GetAuthorList(string name , string genre)
+        public async Task<IEnumerable<AuthorModel>> GetAuthorListAsync(string name , string genre)
         {
             IEnumerable<Author> authorList = new List<Author>();
             if(name != null && genre != null)

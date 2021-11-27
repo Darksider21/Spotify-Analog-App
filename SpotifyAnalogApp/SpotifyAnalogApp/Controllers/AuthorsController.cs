@@ -28,7 +28,7 @@ namespace SpotifyAnalogApp.Web.Controllers
 
         public async Task<IActionResult> GetAllAuthors(string name , string genre)
         {
-            var authors = await authorService.GetAuthorList(name,genre);
+            var authors = await authorService.GetAuthorListAsync(name,genre);
 
             return Ok(authors);
 

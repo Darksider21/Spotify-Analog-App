@@ -23,14 +23,14 @@ namespace SpotifyAnalogApp.Business.Services
             _songRepository = songRepository;
         }
 
-        public async Task<SongModel> GetSongById(int songId)
+        public async Task<SongModel> GetSongByIdAsync(int songId)
         {
-            var songsWithAuthorsList = await _songRepository.GetSongById(songId);
+            var songsWithAuthorsList = await _songRepository.GetSongByIdAsync(songId);
 
             var mapped = ObjectMapper.Mapper.Map<SongModel>(songsWithAuthorsList);
             return mapped;
         }
-        public async Task<IEnumerable<SongModel>> GetSongsWithAuthorsList()
+        public async Task<IEnumerable<SongModel>> GetSongsWithAuthorsListAsync()
         {
             var songsWithAuthorsList = await _songRepository.GetSongWithAuthorsListAsync();
 
@@ -38,7 +38,7 @@ namespace SpotifyAnalogApp.Business.Services
             return mapped;
 
         }
-        public async Task<IEnumerable<SongModel>> GetSongList()
+        public async Task<IEnumerable<SongModel>> GetSongListAsync()
         {
             var songsList = await _songRepository.GetSongListAsync();
 
@@ -48,25 +48,25 @@ namespace SpotifyAnalogApp.Business.Services
         }
 
         
-        public async Task<IEnumerable<SongModel>> GetSongsByAuthorsAndGenres(AuthorGenreDTO dto)
+        public async Task<IEnumerable<SongModel>> GetSongsByAuthorsAndGenresAsync(AuthorGenreDTO dto)
         {
             IEnumerable<Song> songsList = new List<Song>(); 
             if (dto.Authors != null && dto.Genres != null)
             {
-                 songsList = await _songRepository.GetSongsByGenresAndAuthors(dto.Genres, dto.Authors);
+                 songsList = await _songRepository.GetSongsByGenresAndAuthorsAsync(dto.Genres, dto.Authors);
             }
             else if (dto.Authors != null)
             {
-                songsList = await _songRepository.GetSongsByMultipleAuthors(dto.Authors);
+                songsList = await _songRepository.GetSongsByMultipleAuthorsAsync(dto.Authors);
             }
             else
             {
-                songsList = await _songRepository.GetSongsByMultipleGenres(dto.Genres);
+                songsList = await _songRepository.GetSongsByMultipleGenresAsync(dto.Genres);
             }
             return ObjectMapper.Mapper.Map<IEnumerable<SongModel>>(songsList);
         }
 
-        public async Task<IEnumerable<SongModel>> GetRandomSongsByAuthorsAndGenres(int amountOfSongs, AuthorGenreDTO dto)
+        public async Task<IEnumerable<SongModel>> GetRandomSongsByAuthorsAndGenresAsync(int amountOfSongs, AuthorGenreDTO dto)
         {
             IEnumerable<Song> songsList = new List<Song>();
 

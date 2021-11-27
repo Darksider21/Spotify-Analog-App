@@ -249,51 +249,12 @@ namespace SpotifyAnalogApp.Data.Migrations
                     b.ToTable("PlaylistSong");
                 });
 
-            modelBuilder.Entity("SpotifyAnalogApp.Data.Models.Analytics", b =>
-                {
-                    b.Property<int>("AnalyticsId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<int>("ClassicalSongsCount")
-                        .HasColumnType("int");
-
-                    b.Property<int>("ElectronicSongsCount")
-                        .HasColumnType("int");
-
-                    b.Property<int>("JPopSongsCount")
-                        .HasColumnType("int");
-
-                    b.Property<int>("JazzSongsCount")
-                        .HasColumnType("int");
-
-                    b.Property<int>("MetalSongsCount")
-                        .HasColumnType("int");
-
-                    b.Property<int>("PopSongsCount")
-                        .HasColumnType("int");
-
-                    b.Property<int>("RockSongsCount")
-                        .HasColumnType("int");
-
-                    b.Property<int>("TotalSongsCount")
-                        .HasColumnType("int");
-
-                    b.HasKey("AnalyticsId");
-
-                    b.ToTable("Analytics");
-                });
-
             modelBuilder.Entity("SpotifyAnalogApp.Data.Models.AppUser", b =>
                 {
                     b.Property<int>("AppUserId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<int?>("AnalyticsId")
-                        .HasColumnType("int");
 
                     b.Property<DateTime>("DateCreated")
                         .HasColumnType("datetime2");
@@ -307,8 +268,6 @@ namespace SpotifyAnalogApp.Data.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("AppUserId");
-
-                    b.HasIndex("AnalyticsId");
 
                     b.ToTable("AppUsers");
                 });
@@ -348,6 +307,31 @@ namespace SpotifyAnalogApp.Data.Migrations
                     b.HasKey("GenreId");
 
                     b.ToTable("Genres");
+                });
+
+            modelBuilder.Entity("SpotifyAnalogApp.Data.Models.GenreAnalytics", b =>
+                {
+                    b.Property<int>("GenreAnalyticsId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int?>("AppUserId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("GenreId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("SongsOfThisGenreCount")
+                        .HasColumnType("int");
+
+                    b.HasKey("GenreAnalyticsId");
+
+                    b.HasIndex("AppUserId");
+
+                    b.HasIndex("GenreId");
+
+                    b.ToTable("GenreAnalytics");
                 });
 
             modelBuilder.Entity("SpotifyAnalogApp.Data.Models.Playlist", b =>
@@ -512,20 +496,26 @@ namespace SpotifyAnalogApp.Data.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("SpotifyAnalogApp.Data.Models.AppUser", b =>
-                {
-                    b.HasOne("SpotifyAnalogApp.Data.Models.Analytics", "Analytics")
-                        .WithMany()
-                        .HasForeignKey("AnalyticsId");
-
-                    b.Navigation("Analytics");
-                });
-
             modelBuilder.Entity("SpotifyAnalogApp.Data.Models.Author", b =>
                 {
                     b.HasOne("SpotifyAnalogApp.Data.Models.Genre", "Genre")
                         .WithMany()
                         .HasForeignKey("GenreId");
+
+                    b.Navigation("Genre");
+                });
+
+            modelBuilder.Entity("SpotifyAnalogApp.Data.Models.GenreAnalytics", b =>
+                {
+                    b.HasOne("SpotifyAnalogApp.Data.Models.AppUser", "AppUser")
+                        .WithMany("Analytics")
+                        .HasForeignKey("AppUserId");
+
+                    b.HasOne("SpotifyAnalogApp.Data.Models.Genre", "Genre")
+                        .WithMany()
+                        .HasForeignKey("GenreId");
+
+                    b.Navigation("AppUser");
 
                     b.Navigation("Genre");
                 });
@@ -565,6 +555,8 @@ namespace SpotifyAnalogApp.Data.Migrations
 
             modelBuilder.Entity("SpotifyAnalogApp.Data.Models.AppUser", b =>
                 {
+                    b.Navigation("Analytics");
+
                     b.Navigation("UsersPlaylists");
                 });
 #pragma warning restore 612, 618

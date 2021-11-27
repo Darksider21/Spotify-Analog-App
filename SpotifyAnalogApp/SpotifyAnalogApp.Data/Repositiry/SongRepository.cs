@@ -23,13 +23,13 @@ namespace SpotifyAnalogApp.Data.Repositiry
         {
             return await GetAllAsync();
         }
-        public async Task<Song> GetSongById(int id)
+        public async Task<Song> GetSongByIdAsync(int id)
         {
 
             return await base._dbContext.Songs.Where(x => x.SongId == id)
                 .Include(x => x.Author).Include(x => x.Genre).FirstOrDefaultAsync();
         }
-        public async Task<IEnumerable<Song>> GetSongsByIds(int[] songIds)
+        public async Task<IEnumerable<Song>> GetSongsByIdsAsync(int[] songIds)
         {
             return await _dbContext.Songs.Where(x => songIds.Contains(x.SongId))
                 .Include(x => x.Author).Include(x => x.Genre).ToListAsync();
@@ -40,14 +40,14 @@ namespace SpotifyAnalogApp.Data.Repositiry
         
 
 
-        public async  Task<IEnumerable<Song>> GetSongsByMultipleGenres(string[] genres)
+        public async  Task<IEnumerable<Song>> GetSongsByMultipleGenresAsync(string[] genres)
         {
 
             return await base._dbContext.Songs.Where(x => genres.Contains(x.Genre.GenreName))
                 .Include(x => x.Author).Include(x => x.Genre).ToListAsync();
         }
 
-        public async Task<IEnumerable<Song>> GetSongsByMultipleAuthors(string[] names)
+        public async Task<IEnumerable<Song>> GetSongsByMultipleAuthorsAsync(string[] names)
         {
 
             return await base._dbContext.Songs.Where(x => names.Contains(x.Author.Name))
@@ -55,7 +55,7 @@ namespace SpotifyAnalogApp.Data.Repositiry
 
         }
 
-        public async Task<IEnumerable<Song>> GetSongsByGenresAndAuthors(string[] genres , string[] authors)
+        public async Task<IEnumerable<Song>> GetSongsByGenresAndAuthorsAsync(string[] genres , string[] authors)
         {
             return await base._dbContext.Songs.Where(x => genres.Contains(x.Genre.GenreName) && authors.Contains(x.Author.Name))
                 .Include(x => x.Author.Genre).ToListAsync();

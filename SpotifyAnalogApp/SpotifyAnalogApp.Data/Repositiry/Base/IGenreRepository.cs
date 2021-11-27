@@ -11,7 +11,9 @@ namespace SpotifyAnalogApp.Data.Repositiry.Base
     {
         public Task<IEnumerable<Genre>> GetAllGenresAsync();
 
-        public Task<IEnumerable<Genre>> GetGenreByNameList(string name);
+        public Task<Genre> GetGenreByNameListAsync(string name);
+        public Task<Genre> GetGenreByIdAsync(int genreId);
+        public Task<IEnumerable<Genre>> GetGenresByIdsAsync(int[] genreIds);
 
         
 

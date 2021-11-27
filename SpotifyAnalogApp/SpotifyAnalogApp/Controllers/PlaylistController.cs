@@ -16,10 +16,10 @@ namespace SpotifyAnalogApp.Web.Controllers
     [ApiController]
     public class PlaylistController : ControllerBase
     {
-        private IUserService userService;
+        private IAppUserService userService;
         private IPlaylistService playlistService;
 
-        public PlaylistController(IUserService userService, IPlaylistService playlistService)
+        public PlaylistController(IAppUserService userService, IPlaylistService playlistService)
         {
             this.userService = userService;
             this.playlistService = playlistService;
@@ -30,25 +30,25 @@ namespace SpotifyAnalogApp.Web.Controllers
         {
             if (userIds.Any())
             {
-                var playlistsByUsers = await playlistService.GetPlaylistsByUserId(userIds);
+                var playlistsByUsers = await playlistService.GetPlaylistsByUserIdAsync(userIds);
                 return Ok(playlistsByUsers);
 
             }
-            var playlists = await playlistService.GetAllPlaylists();
+            var playlists = await playlistService.GetAllPlaylistsAsync();
             return Ok(playlists);
         }
         [HttpGet]
         [Route("getPlaylistByid")]
         public async Task<IActionResult> GetPlaylistById(int playlistId)
         {
-            var playlist = await playlistService.GetPlaylistById(playlistId);
+            var playlist = await playlistService.GetPlaylistByIdAsync(playlistId);
             return Ok(playlist);
         }
         [HttpPost]
         [Route("createPlaylistForUser")]
         public async Task<IActionResult> CreatePlaylist(int userId, string playlistName, [FromQuery] int[] songIds)
         {
-            var playlist = await playlistService.CreatePlaylist(userId, songIds, playlistName);
+            var playlist = await playlistService.CreatePlaylistAsync(userId, songIds, playlistName);
 
             return Ok(playlist);
         }
@@ -56,14 +56,14 @@ namespace SpotifyAnalogApp.Web.Controllers
         [Route("AddSongsToPlaylist")]
         public async Task<IActionResult> AddSongsToPlaylist([FromBody]RequestPlaylistModel playlistModel)
         {
-            var playlist = await playlistService.AddSongsToPlaylist(playlistModel);
+            var playlist = await playlistService.AddSongsToPlaylistAsync(playlistModel);
             return Ok(playlist);
         }
         [HttpPost]
         [Route("RemoveSongsFromPlaylist")]
         public async Task<IActionResult> RemoveSongsFromPlaylist([FromBody] RequestPlaylistModel playlistModel)
         {
-            var playlist = await playlistService.RemoveSongsFromPlaylist(playlistModel);
+            var playlist = await playlistService.RemoveSongsFromPlaylistAsync(playlistModel);
             return Ok(playlist);
         }
 
@@ -76,7 +76,7 @@ namespace SpotifyAnalogApp.Web.Controllers
                 return BadRequest("Invalid id");
             }
 
-            await playlistService.DeletePlaylist(playlistId);
+            await playlistService.DeletePlaylistAsync(playlistId);
             return NoContent();
         }
         
