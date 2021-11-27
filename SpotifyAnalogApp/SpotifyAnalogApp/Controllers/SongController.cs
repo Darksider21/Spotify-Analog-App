@@ -31,7 +31,7 @@ namespace SpotifyAnalogApp.Web.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAllSongs()
         {
-            var songs = await songService.GetSongList();
+            var songs = await songService.GetSongListAsync();
 
             return Ok(songs);
 
@@ -41,7 +41,7 @@ namespace SpotifyAnalogApp.Web.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAllSongsWithAuthors()
         {
-            var songs = await songService.GetSongsWithAuthorsList();
+            var songs = await songService.GetSongsWithAuthorsListAsync();
 
             return Ok(songs);
 
@@ -59,7 +59,7 @@ namespace SpotifyAnalogApp.Web.Controllers
             {
                 return BadRequest();
             }
-            var songs = await songService.GetSongById(id);
+            var songs = await songService.GetSongByIdAsync(id);
 
             return Ok(songs);
 
@@ -72,7 +72,7 @@ namespace SpotifyAnalogApp.Web.Controllers
             {
                 return StatusCode(422);
             }
-            var songs = await songService.GetSongsByAuthorsAndGenres(authorGenreDTO);
+            var songs = await songService.GetSongsByAuthorsAndGenresAsync(authorGenreDTO);
             return Ok(songs);
         }
 
@@ -80,7 +80,7 @@ namespace SpotifyAnalogApp.Web.Controllers
         [Route("randomSongsByAuthorsAndGenres")]
         public async Task<IActionResult> GetRandomSongsByAuthorsAndGenres(int amountOfSongs, [FromBody] AuthorGenreDTO authorGenreDTO)
         {
-            var randomSongs = await songService.GetRandomSongsByAuthorsAndGenres(amountOfSongs, authorGenreDTO);
+            var randomSongs = await songService.GetRandomSongsByAuthorsAndGenresAsync(amountOfSongs, authorGenreDTO);
             return Ok(randomSongs);
         }
 

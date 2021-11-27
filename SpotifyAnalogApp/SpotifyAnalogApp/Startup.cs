@@ -75,7 +75,7 @@ namespace SpotifyAnalogApp
             services.AddScoped<IAuthorRepository, AuthorRepository>();
             services.AddScoped<IGenreRepository, GenreRepository>();
             services.AddScoped<ISongRepository, SongRepository>();
-            services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<IAppUserRepository, UserRepository>();
             services.AddScoped<IPlaylistRepository, PlaylistRepository>();
             services.AddScoped<IAnalyticsRepository, AnalyticsRepository>();
 
@@ -83,7 +83,7 @@ namespace SpotifyAnalogApp
             services.AddScoped<ISongService, SongService>();
             services.AddScoped<IGenreService, GenreService>();
             services.AddScoped<IAuthorService, AuthorService>();
-            services.AddScoped<IUserService, UserService>();
+            services.AddScoped<IAppUserService, AppUserService>();
             services.AddScoped<IPlaylistService, PlaylistService>();
             services.AddScoped<IAnalyticsService, AnalyticsService>();
             //services.AddControllers();

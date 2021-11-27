@@ -18,33 +18,33 @@ namespace SpotifyAnalogApp.Data.Repositiry
 
 
         
-        public async Task CreatePlaylistForUser(Playlist playlis)
+        public async Task CreatePlaylistForUserAsync(Playlist playlis)
         {
             await AddAsync(playlis);
         }
 
-        public async Task DeletePlaylist(int playlistId)
+        public async Task DeletePlaylistAsync(Playlist playlist)
         {
-            var playlist =  await GetPlaylistById(playlistId);
+            
             await DeleteAsync(playlist);
         }
 
-        public async Task<Playlist> GetPlaylistById(int playlistId)
+        public async Task<Playlist> GetPlaylistByIdAsync(int playlistId)
         {
             return  await _dbContext.Playlists.Where(x => x.PlaylistId.Equals(playlistId)).Include(x => x.SongsInPlaylist).Include(x => x.User).FirstOrDefaultAsync();
         }
 
-        public async Task<IEnumerable<Playlist>> GetPlaylists()
+        public async Task<IEnumerable<Playlist>> GetPlaylistsAsync()
         {
             return await _dbContext.Playlists.Select(x => x).Include(x => x.SongsInPlaylist).ToListAsync();
         }
 
-        public async Task<IEnumerable<Playlist>> GetPlaylistsByUserId(int[] userIds)
+        public async Task<IEnumerable<Playlist>> GetPlaylistsByUserIdAsync(int[] userIds)
         {
             return await _dbContext.Playlists.Where(x => userIds.Contains(x.User.AppUserId)).Select(x => x).Include(x => x.SongsInPlaylist).ToListAsync();
         }
 
-        public async Task UpdatePlaylist(Playlist playlis)
+        public async Task UpdatePlaylistAsync(Playlist playlis)
         {
 
             await UpdateAsync(playlis);

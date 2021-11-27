@@ -17,10 +17,10 @@ namespace SpotifyAnalogApp.Web.Controllers
     [ApiController]
     public class AppUsersController : ControllerBase
     {
-        private IUserService userService;
+        private IAppUserService userService;
         private IPlaylistService playlistService;
 
-       public  AppUsersController(IUserService userService, IPlaylistService playlistService)
+       public  AppUsersController(IAppUserService userService, IPlaylistService playlistService)
         {
             this.userService = userService;
             this.playlistService = playlistService;
@@ -32,14 +32,14 @@ namespace SpotifyAnalogApp.Web.Controllers
         [Route("getUsers")]
         public async Task<IActionResult> GetUsers()
         {
-            var users = await userService.GetUsers();
+            var users = await userService.GetUsersAsync();
             return Ok(users);
         }
         [HttpGet]
         [Route("getUsersById")]
         public async Task<IActionResult> GetUsersById(int userId)
         {
-            var user = await userService.GetUserById(userId);
+            var user = await userService.GetUserByIdAsync(userId);
 
             return Ok(user);
         }
@@ -51,7 +51,7 @@ namespace SpotifyAnalogApp.Web.Controllers
         [Route("createUser")]
         public async Task<IActionResult> CreateUser(string name , string email)
         {
-           var user =  await userService.CreateUser(name, email);
+           var user =  await userService.CreateUserAsync(name, email);
 
             return new ObjectResult(user) { StatusCode=StatusCodes.Status201Created};
         }
@@ -63,7 +63,7 @@ namespace SpotifyAnalogApp.Web.Controllers
         [Route("changeUserInfo")]
         public async Task<IActionResult> UpdateUserInfo([FromBody] RequestUserModel model)
         {
-            var user = await userService.UpdateUserInfo(model);
+            var user = await userService.UpdateUserInfoAsync(model);
 
             return Ok(user);
 
@@ -74,14 +74,14 @@ namespace SpotifyAnalogApp.Web.Controllers
         [Route("addsongstousersfavorites")]
         public async Task<IActionResult> AddSongsToUsersFavorites(int userId , [FromBody]int[] songIds)
         {
-            var user = await userService.AddSongsToUsersFavorites(userId, songIds);
+            var user = await userService.AddSongsToUsersFavoritesAsync(userId, songIds);
             return Ok(user);
         }
-        [HttpPost]
+        [HttpDelete]
         [Route("RemoveSongsFromUsersFavorites")]
         public async Task<IActionResult> RemoveSongsFromUsersFavorites(int userId, [FromBody] int[] songIds)
         {
-            var user = await userService.RemoveSongsFromUsersFavorites(userId, songIds);
+            var user = await userService.RemoveSongsFromUsersFavoritesAsync(userId, songIds);
             return Ok(user);
         }
 
@@ -89,7 +89,7 @@ namespace SpotifyAnalogApp.Web.Controllers
         [Route("deleteUser")]
         public async Task<IActionResult> DeleteUser(int userId)
         {
-            await userService.DeleteUser(userId);
+            await userService.DeleteUserAsync(userId);
             return NoContent();
         }
 

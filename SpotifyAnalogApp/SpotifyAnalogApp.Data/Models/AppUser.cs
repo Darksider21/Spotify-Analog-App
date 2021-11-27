@@ -19,7 +19,7 @@ namespace SpotifyAnalogApp.Data.Models
         [EmailAddress]
         public string Email { get; set; }
 
-        public Analytics Analytics { get; set; }
+        public ICollection<GenreAnalytics> Analytics { get; set; }
         public ICollection<Song> FavoriteSongs { get; set; }
 
         public ICollection<Playlist> UsersPlaylists { get; set; }

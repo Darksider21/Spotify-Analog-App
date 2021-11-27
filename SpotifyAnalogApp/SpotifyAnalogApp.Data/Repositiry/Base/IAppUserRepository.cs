@@ -7,15 +7,15 @@ using System.Threading.Tasks;
 
 namespace SpotifyAnalogApp.Data.Repositiry.Base
 {
-   public interface IUserRepository
+   public interface IAppUserRepository
     {
 
         public Task<IEnumerable<AppUser>> GetUsersListAsync();
-        public Task<AppUser> GetUserById(int id);
+        public Task<AppUser> GetUserByIdAsync(int id);
 
-        public Task CreateUser(AppUser user);
-        public Task DeleteUser(int id);
-        public Task UpdateUser(AppUser user);
+        public Task CreateUserAsync(AppUser user);
+        public Task DeleteUserAsync(int id);
+        public Task UpdateUserAsync(AppUser user);
 
 
        

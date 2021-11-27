@@ -10,11 +10,14 @@ namespace SpotifyAnalogApp.Business.Services.ServiceInterfaces
 {
     public interface IAnalyticsService
     {
-        public Task<IEnumerable<AnalyticsModel>> GetAnalytics(int[] userIds);
-        public Task<AnalyticsModel> GetAnalyticsByUserId(int userId);
+        public Task<IEnumerable<GenreAnalyticsModel>> GetAnalyticsByUserIdAsync(int userId);
+        public Task<IEnumerable<GenreAnalyticsModel>> GetAnalyticsByUserIdsAsync(int[] userIds);
 
-        public Task AddSongsToUsersAnalytics(int userId , IEnumerable<Song> songs);
-        public Task RemoveSongsFromUsersAnalytics(int userId , IEnumerable<Song> songs);
-        public Task DeleteAnalytics(int userId);
+        public Task AddSongsToUserAnalyticsAsync(AppUser appUser, IEnumerable<Song> songs);
+        public Task RemoveSongsFromUserAnalyticsAsync(AppUser appUser, IEnumerable<Song> songs);
+
+        public Task DeleteAllUserAnalyticsAsync(AppUser appUser);
+
+        
     }
 }

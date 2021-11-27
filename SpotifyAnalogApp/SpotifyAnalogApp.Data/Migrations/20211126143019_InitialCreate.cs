@@ -3,30 +3,10 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace SpotifyAnalogApp.Data.Migrations
 {
-    public partial class JwtAuthDbStore : Migration
+    public partial class InitialCreate : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropForeignKey(
-                name: "FK_Playlists_Users_UserId",
-                table: "Playlists");
-
-            migrationBuilder.DropTable(
-                name: "SongUser");
-
-            migrationBuilder.DropTable(
-                name: "Users");
-
-            migrationBuilder.RenameColumn(
-                name: "UserId",
-                table: "Playlists",
-                newName: "UserAppUserId");
-
-            migrationBuilder.RenameIndex(
-                name: "IX_Playlists_UserId",
-                table: "Playlists",
-                newName: "IX_Playlists_UserAppUserId");
-
             migrationBuilder.CreateTable(
                 name: "AppUsers",
                 columns: table => new
@@ -35,18 +15,11 @@ namespace SpotifyAnalogApp.Data.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     DateCreated = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    AnalyticsId = table.Column<int>(type: "int", nullable: true)
+                    Email = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_AppUsers", x => x.AppUserId);
-                    table.ForeignKey(
-                        name: "FK_AppUsers_Analytics_AnalyticsId",
-                        column: x => x.AnalyticsId,
-                        principalTable: "Analytics",
-                        principalColumn: "AnalyticsId",
-                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -89,27 +62,36 @@ namespace SpotifyAnalogApp.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "AppUserSong",
+                name: "Genres",
                 columns: table => new
                 {
-                    FavoriteSongsSongId = table.Column<int>(type: "int", nullable: false),
-                    UsersAppUserId = table.Column<int>(type: "int", nullable: false)
+                    GenreId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    GenreName = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_AppUserSong", x => new { x.FavoriteSongsSongId, x.UsersAppUserId });
+                    table.PrimaryKey("PK_Genres", x => x.GenreId);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Playlists",
+                columns: table => new
+                {
+                    PlaylistId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    PlaylistName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    UserAppUserId = table.Column<int>(type: "int", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Playlists", x => x.PlaylistId);
                     table.ForeignKey(
-                        name: "FK_AppUserSong_AppUsers_UsersAppUserId",
-                        column: x => x.UsersAppUserId,
+                        name: "FK_Playlists_AppUsers_UserAppUserId",
+                        column: x => x.UserAppUserId,
                         principalTable: "AppUsers",
                         principalColumn: "AppUserId",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_AppUserSong_Songs_FavoriteSongsSongId",
-                        column: x => x.FavoriteSongsSongId,
-                        principalTable: "Songs",
-                        principalColumn: "SongId",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -218,10 +200,152 @@ namespace SpotifyAnalogApp.Data.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
-            migrationBuilder.CreateIndex(
-                name: "IX_AppUsers_AnalyticsId",
-                table: "AppUsers",
-                column: "AnalyticsId");
+            migrationBuilder.CreateTable(
+                name: "RefreshTokens",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    Token = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    JwtId = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    IsUsed = table.Column<bool>(type: "bit", nullable: false),
+                    IsRevorked = table.Column<bool>(type: "bit", nullable: false),
+                    AddedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    ExpiryDate = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_RefreshTokens", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_RefreshTokens_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Authors",
+                columns: table => new
+                {
+                    AuthorId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    GenreId = table.Column<int>(type: "int", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Authors", x => x.AuthorId);
+                    table.ForeignKey(
+                        name: "FK_Authors_Genres_GenreId",
+                        column: x => x.GenreId,
+                        principalTable: "Genres",
+                        principalColumn: "GenreId",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "GenreAnalytics",
+                columns: table => new
+                {
+                    GenreAnalyticsId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    SongsOfThisGenreCount = table.Column<int>(type: "int", nullable: false),
+                    GenreId = table.Column<int>(type: "int", nullable: true),
+                    AppUserId = table.Column<int>(type: "int", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_GenreAnalytics", x => x.GenreAnalyticsId);
+                    table.ForeignKey(
+                        name: "FK_GenreAnalytics_AppUsers_AppUserId",
+                        column: x => x.AppUserId,
+                        principalTable: "AppUsers",
+                        principalColumn: "AppUserId",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_GenreAnalytics_Genres_GenreId",
+                        column: x => x.GenreId,
+                        principalTable: "Genres",
+                        principalColumn: "GenreId",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Songs",
+                columns: table => new
+                {
+                    SongId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    AuthorId = table.Column<int>(type: "int", nullable: true),
+                    GenreId = table.Column<int>(type: "int", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Songs", x => x.SongId);
+                    table.ForeignKey(
+                        name: "FK_Songs_Authors_AuthorId",
+                        column: x => x.AuthorId,
+                        principalTable: "Authors",
+                        principalColumn: "AuthorId",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Songs_Genres_GenreId",
+                        column: x => x.GenreId,
+                        principalTable: "Genres",
+                        principalColumn: "GenreId",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "AppUserSong",
+                columns: table => new
+                {
+                    FavoriteSongsSongId = table.Column<int>(type: "int", nullable: false),
+                    UsersAppUserId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AppUserSong", x => new { x.FavoriteSongsSongId, x.UsersAppUserId });
+                    table.ForeignKey(
+                        name: "FK_AppUserSong_AppUsers_UsersAppUserId",
+                        column: x => x.UsersAppUserId,
+                        principalTable: "AppUsers",
+                        principalColumn: "AppUserId",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_AppUserSong_Songs_FavoriteSongsSongId",
+                        column: x => x.FavoriteSongsSongId,
+                        principalTable: "Songs",
+                        principalColumn: "SongId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "PlaylistSong",
+                columns: table => new
+                {
+                    PlaylistsPlaylistId = table.Column<int>(type: "int", nullable: false),
+                    SongsInPlaylistSongId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_PlaylistSong", x => new { x.PlaylistsPlaylistId, x.SongsInPlaylistSongId });
+                    table.ForeignKey(
+                        name: "FK_PlaylistSong_Playlists_PlaylistsPlaylistId",
+                        column: x => x.PlaylistsPlaylistId,
+                        principalTable: "Playlists",
+                        principalColumn: "PlaylistId",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_PlaylistSong_Songs_SongsInPlaylistSongId",
+                        column: x => x.SongsInPlaylistSongId,
+                        principalTable: "Songs",
+                        principalColumn: "SongId",
+                        onDelete: ReferentialAction.Cascade);
+                });
 
             migrationBuilder.CreateIndex(
                 name: "IX_AppUserSong_UsersAppUserId",
@@ -267,21 +391,49 @@ namespace SpotifyAnalogApp.Data.Migrations
                 unique: true,
                 filter: "[NormalizedUserName] IS NOT NULL");
 
-            migrationBuilder.AddForeignKey(
-                name: "FK_Playlists_AppUsers_UserAppUserId",
+            migrationBuilder.CreateIndex(
+                name: "IX_Authors_GenreId",
+                table: "Authors",
+                column: "GenreId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_GenreAnalytics_AppUserId",
+                table: "GenreAnalytics",
+                column: "AppUserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_GenreAnalytics_GenreId",
+                table: "GenreAnalytics",
+                column: "GenreId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Playlists_UserAppUserId",
                 table: "Playlists",
-                column: "UserAppUserId",
-                principalTable: "AppUsers",
-                principalColumn: "AppUserId",
-                onDelete: ReferentialAction.Restrict);
+                column: "UserAppUserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PlaylistSong_SongsInPlaylistSongId",
+                table: "PlaylistSong",
+                column: "SongsInPlaylistSongId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_RefreshTokens_UserId",
+                table: "RefreshTokens",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Songs_AuthorId",
+                table: "Songs",
+                column: "AuthorId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Songs_GenreId",
+                table: "Songs",
+                column: "GenreId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropForeignKey(
-                name: "FK_Playlists_AppUsers_UserAppUserId",
-                table: "Playlists");
-
             migrationBuilder.DropTable(
                 name: "AppUserSong");
 
@@ -301,87 +453,34 @@ namespace SpotifyAnalogApp.Data.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
-                name: "AppUsers");
+                name: "GenreAnalytics");
+
+            migrationBuilder.DropTable(
+                name: "PlaylistSong");
+
+            migrationBuilder.DropTable(
+                name: "RefreshTokens");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
+                name: "Playlists");
+
+            migrationBuilder.DropTable(
+                name: "Songs");
+
+            migrationBuilder.DropTable(
                 name: "AspNetUsers");
 
-            migrationBuilder.RenameColumn(
-                name: "UserAppUserId",
-                table: "Playlists",
-                newName: "UserId");
+            migrationBuilder.DropTable(
+                name: "AppUsers");
 
-            migrationBuilder.RenameIndex(
-                name: "IX_Playlists_UserAppUserId",
-                table: "Playlists",
-                newName: "IX_Playlists_UserId");
+            migrationBuilder.DropTable(
+                name: "Authors");
 
-            migrationBuilder.CreateTable(
-                name: "Users",
-                columns: table => new
-                {
-                    UserId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    AnalyticsId = table.Column<int>(type: "int", nullable: true),
-                    DateCreated = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Users", x => x.UserId);
-                    table.ForeignKey(
-                        name: "FK_Users_Analytics_AnalyticsId",
-                        column: x => x.AnalyticsId,
-                        principalTable: "Analytics",
-                        principalColumn: "AnalyticsId",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "SongUser",
-                columns: table => new
-                {
-                    FavoriteSongsSongId = table.Column<int>(type: "int", nullable: false),
-                    UsersUserId = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_SongUser", x => new { x.FavoriteSongsSongId, x.UsersUserId });
-                    table.ForeignKey(
-                        name: "FK_SongUser_Songs_FavoriteSongsSongId",
-                        column: x => x.FavoriteSongsSongId,
-                        principalTable: "Songs",
-                        principalColumn: "SongId",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_SongUser_Users_UsersUserId",
-                        column: x => x.UsersUserId,
-                        principalTable: "Users",
-                        principalColumn: "UserId",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateIndex(
-                name: "IX_SongUser_UsersUserId",
-                table: "SongUser",
-                column: "UsersUserId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Users_AnalyticsId",
-                table: "Users",
-                column: "AnalyticsId");
-
-            migrationBuilder.AddForeignKey(
-                name: "FK_Playlists_Users_UserId",
-                table: "Playlists",
-                column: "UserId",
-                principalTable: "Users",
-                principalColumn: "UserId",
-                onDelete: ReferentialAction.Restrict);
+            migrationBuilder.DropTable(
+                name: "Genres");
         }
     }
 }

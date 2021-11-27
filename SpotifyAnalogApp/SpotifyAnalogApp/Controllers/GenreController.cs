@@ -21,9 +21,9 @@ namespace SpotifyAnalogApp.Web.Controllers
             this.genreService = service;
         }
         [HttpGet]
-        public async Task<IActionResult> GetGenres(string genreName)
+        public async Task<IActionResult> GetGenres()
         {
-            var genre = await genreService.GetGenreList(genreName);
+            var genre = await genreService.GetGenreListAsync();
 
             return Ok(genre);
 

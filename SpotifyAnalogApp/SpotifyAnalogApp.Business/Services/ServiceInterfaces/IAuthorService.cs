@@ -9,7 +9,7 @@ namespace SpotifyAnalogApp.Business.Services.ServiceInterfaces
 {
    public interface IAuthorService
     {
-        public Task<IEnumerable<AuthorModel>> GetAuthorList(string name , string genre);
+        public Task<IEnumerable<AuthorModel>> GetAuthorListAsync(string name , string genre);
 
        
 

@@ -16,10 +16,10 @@ namespace SpotifyAnalogApp.Business.Services
     {
         private IPlaylistRepository playlistRepository;
         private ISongRepository songRepository;
-        private IUserRepository userRepository;
+        private IAppUserRepository userRepository;
         private IAnalyticsService analyticsService;
 
-        public PlaylistService(IPlaylistRepository repository , ISongRepository songRepo, IUserRepository userRepo , IAnalyticsService analyticsService)
+        public PlaylistService(IPlaylistRepository repository , ISongRepository songRepo, IAppUserRepository userRepo , IAnalyticsService analyticsService)
         {
             playlistRepository = repository;
             songRepository = songRepo;
@@ -28,24 +28,24 @@ namespace SpotifyAnalogApp.Business.Services
             
         }
 
-        public async Task<PlaylistModel> CreatePlaylist(int userId, int[] songsid , string playlistName)
+        public async Task<PlaylistModel> CreatePlaylistAsync(int userId, int[] songsid , string playlistName)
         {
-            var SongsToAdd = await songRepository.GetSongsByIds(songsid);
-            var user = await userRepository.GetUserById(userId);
+            var SongsToAdd = await songRepository.GetSongsByIdsAsync(songsid);
+            var user = await userRepository.GetUserByIdAsync(userId);
             SongsToAdd = SongsToAdd.Distinct();
             var newPlaylist = new Playlist() { PlaylistName= playlistName , SongsInPlaylist = SongsToAdd.ToList() , User = user};
 
-            await analyticsService.AddSongsToUsersAnalytics(userId,SongsToAdd);
-            await playlistRepository.CreatePlaylistForUser(newPlaylist);
+            await analyticsService.AddSongsToUserAnalyticsAsync(user,SongsToAdd);
+            await playlistRepository.CreatePlaylistForUserAsync(newPlaylist);
 
             var mapped = ObjectMapper.Mapper.Map<PlaylistModel>(newPlaylist);
             return mapped;
             
         }
 
-        public async Task<IEnumerable<PlaylistModel>> GetAllPlaylists()
+        public async Task<IEnumerable<PlaylistModel>> GetAllPlaylistsAsync()
         {
-            var playlists = await playlistRepository.GetPlaylists();
+            var playlists = await playlistRepository.GetPlaylistsAsync();
 
             var mapped = ObjectMapper.Mapper.Map<IEnumerable<PlaylistModel>>(playlists);
 
@@ -53,9 +53,9 @@ namespace SpotifyAnalogApp.Business.Services
 
         }
 
-        public async Task<PlaylistModel> GetPlaylistById(int playlistId)
+        public async Task<PlaylistModel> GetPlaylistByIdAsync(int playlistId)
         {
-            var playlist =  await playlistRepository.GetPlaylistById(playlistId);
+            var playlist =  await playlistRepository.GetPlaylistByIdAsync(playlistId);
 
             return ObjectMapper.Mapper.Map<PlaylistModel>(playlist);
 
@@ -63,17 +63,17 @@ namespace SpotifyAnalogApp.Business.Services
 
         
 
-        public  async Task<IEnumerable<PlaylistModel>> GetPlaylistsByUserId(int[] userId)
+        public  async Task<IEnumerable<PlaylistModel>> GetPlaylistsByUserIdAsync(int[] userId)
         {
-            var playlists = await playlistRepository.GetPlaylistsByUserId(userId);
+            var playlists = await playlistRepository.GetPlaylistsByUserIdAsync(userId);
             return ObjectMapper.Mapper.Map<IEnumerable<PlaylistModel>>(playlists);
         }
 
-        public async Task<PlaylistModel> AddSongsToPlaylist(RequestPlaylistModel playlistModel)
+        public async Task<PlaylistModel> AddSongsToPlaylistAsync(RequestPlaylistModel playlistModel)
         {
 
-            var songsToWorkWith = await songRepository.GetSongsByIds(playlistModel.SongsIds);
-            var originalPlaylist = await playlistRepository.GetPlaylistById(playlistModel.PlaylistId);
+            var songsToWorkWith = await songRepository.GetSongsByIdsAsync(playlistModel.SongsIds);
+            var originalPlaylist = await playlistRepository.GetPlaylistByIdAsync(playlistModel.PlaylistId);
             List<Song> newSongs = new List<Song>();
 
             newSongs.AddRange(originalPlaylist.SongsInPlaylist);
@@ -83,20 +83,20 @@ namespace SpotifyAnalogApp.Business.Services
             newSongs = newSongs.Distinct().ToList();
 
             var songsToAddToAnalytics = songsToWorkWith.Except(originalPlaylist.SongsInPlaylist).ToList().Distinct();
-            var userid = originalPlaylist.User.AppUserId;
-            await analyticsService.AddSongsToUsersAnalytics(userid,songsToAddToAnalytics);
+            var user = originalPlaylist.User;
+            await analyticsService.AddSongsToUserAnalyticsAsync(user,songsToAddToAnalytics);
 
             var newPlaylistModel = new ModifyPlaylistModel() { SongsInPlaylist = newSongs };
 
             var newPlaylist = ObjectMapper.Mapper.Map<ModifyPlaylistModel, Playlist>(newPlaylistModel, originalPlaylist);
-            await playlistRepository.UpdatePlaylist(newPlaylist);
+            await playlistRepository.UpdatePlaylistAsync(newPlaylist);
             return ObjectMapper.Mapper.Map<PlaylistModel>(newPlaylist);
         }
 
-        public async Task<PlaylistModel> RemoveSongsFromPlaylist(RequestPlaylistModel playlistModel)
+        public async Task<PlaylistModel> RemoveSongsFromPlaylistAsync(RequestPlaylistModel playlistModel)
         {
-            var songsToWorkWith = await songRepository.GetSongsByIds(playlistModel.SongsIds);
-            var originalPlaylist = await playlistRepository.GetPlaylistById(playlistModel.PlaylistId);
+            var songsToWorkWith = await songRepository.GetSongsByIdsAsync(playlistModel.SongsIds);
+            var originalPlaylist = await playlistRepository.GetPlaylistByIdAsync(playlistModel.PlaylistId);
             List<Song> newSongs = new List<Song>();
             newSongs.AddRange(originalPlaylist.SongsInPlaylist);
 
@@ -105,24 +105,32 @@ namespace SpotifyAnalogApp.Business.Services
             newSongs = newSongs.Distinct().ToList();
 
             var songsToRemoveFromAnalytics = songsToWorkWith.Where(x => originalPlaylist.SongsInPlaylist.Contains(x)).Distinct().ToList();
-            var userId = originalPlaylist.User.AppUserId;
-            await analyticsService.RemoveSongsFromUsersAnalytics(userId ,songsToRemoveFromAnalytics);
+            var user = originalPlaylist.User;
+            await analyticsService.RemoveSongsFromUserAnalyticsAsync(user ,songsToRemoveFromAnalytics);
 
             var newPlaylistModel = new ModifyPlaylistModel() { SongsInPlaylist = newSongs };
 
             var newPlaylist = ObjectMapper.Mapper.Map<ModifyPlaylistModel, Playlist>(newPlaylistModel, originalPlaylist);
-            await playlistRepository.UpdatePlaylist(newPlaylist);
+            await playlistRepository.UpdatePlaylistAsync(newPlaylist);
             return ObjectMapper.Mapper.Map<PlaylistModel>(newPlaylist);
         }
 
-        public async Task DeletePlaylist(int playlistId)
+        public async Task DeletePlaylistAsync(int playlistId)
         {
-            var playlist = await GetPlaylistById(playlistId);
-            if (playlist != null)
+            if (!String.IsNullOrEmpty(playlistId.ToString()))
             {
-                await playlistRepository.DeletePlaylist(playlistId);
+                var playlist = await playlistRepository.GetPlaylistByIdAsync(playlistId);
 
+                
+                if (playlist != null)
+                {
+                    var user = playlist.User;
+                    await analyticsService.RemoveSongsFromUserAnalyticsAsync(user, playlist.SongsInPlaylist);
+                    await playlistRepository.DeletePlaylistAsync(playlist);
+
+                }
             }
+            
         }
 
 

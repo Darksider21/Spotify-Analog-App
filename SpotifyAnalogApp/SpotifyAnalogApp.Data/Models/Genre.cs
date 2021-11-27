@@ -14,6 +14,8 @@ namespace SpotifyAnalogApp.Data.Models
         [Required]
 
         public string GenreName { get; set; }
+
+        
         
 
         
