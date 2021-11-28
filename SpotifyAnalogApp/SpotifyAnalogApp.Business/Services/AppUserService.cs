@@ -40,12 +40,18 @@ namespace SpotifyAnalogApp.Business.Services
 
         public async Task DeleteUserAsync(int userId)
         {
-            var usersPlaylistsToDelete = await playlistRepository.GetPlaylistsByUserIdAsync(new int[] { userId});
-            foreach (var playlist in usersPlaylistsToDelete)
+            var user = await userRepository.GetUserByIdAsync(userId);
+            if (user != null)
             {
-                await playlistRepository.DeletePlaylistAsync(playlist);
+                var usersPlaylistsToDelete = await playlistRepository.GetPlaylistsByUserIdAsync(new int[] { userId });
+                foreach (var playlist in usersPlaylistsToDelete)
+                {
+                    await playlistRepository.DeletePlaylistAsync(playlist);
+                }
+                await analyticsService.DeleteAllUserAnalyticsAsync(user);
+                await userRepository.DeleteUserAsync(userId);
             }
-            await userRepository.DeleteUserAsync(userId);
+            
         }
 
         public  async Task<AppUserModel> GetUserByIdAsync(int userId)

@@ -10,5 +10,6 @@ namespace SpotifyAnalogApp.Business.DTO
     {
         public int GenreAnalyticsId { get; set; }
         public int SongsOfThisGenreCount { get; set; }
+        public GenreModel Genre { get; set; }
     }
 }
