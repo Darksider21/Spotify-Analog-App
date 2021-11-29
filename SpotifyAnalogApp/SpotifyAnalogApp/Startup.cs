@@ -86,6 +86,7 @@ namespace SpotifyAnalogApp
             services.AddScoped<IAppUserService, AppUserService>();
             services.AddScoped<IPlaylistService, PlaylistService>();
             services.AddScoped<IAnalyticsService, AnalyticsService>();
+            services.AddScoped<ISuggestionsService, SuggestionService>();
             //services.AddControllers();
             services.AddControllers().AddNewtonsoftJson(options =>
             options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
