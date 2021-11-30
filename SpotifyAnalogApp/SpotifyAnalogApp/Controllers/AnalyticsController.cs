@@ -10,7 +10,7 @@ namespace SpotifyAnalogApp.Web.Controllers
 {
 
 
-
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     [Route("api/[controller]")]
     [ApiController]
     public class AnalyticsController : ControllerBase
