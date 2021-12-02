@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using SpotifyAnalogApp.Business.DTO;
+using SpotifyAnalogApp.Business.Exceptions;
 using SpotifyAnalogApp.Business.Mapper;
 using SpotifyAnalogApp.Business.Services.ServiceInterfaces;
 using SpotifyAnalogApp.Data.Models;
@@ -42,8 +43,11 @@ namespace SpotifyAnalogApp.Business.Services
             {
                  authorList = await authorRepository.GetAllAuthorsAsync();
             }
-            
 
+            if (authorList.Any())
+            {
+                throw new ContentNotFoundException();
+            }
             
             var mapped = ObjectMapper.Mapper.Map<IEnumerable<AuthorModel>>(authorList);
             return mapped;

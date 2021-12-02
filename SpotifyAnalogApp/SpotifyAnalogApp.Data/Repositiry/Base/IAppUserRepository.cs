@@ -12,6 +12,8 @@ namespace SpotifyAnalogApp.Data.Repositiry.Base
 
         public Task<IEnumerable<AppUser>> GetUsersListAsync();
         public Task<AppUser> GetUserByIdAsync(int id);
+        public Task<IEnumerable<AppUser>> GetUsersByIdsAsync(int[] ids);
+        public Task<AppUser> GetUserByEmail(string email);
 
         public Task CreateUserAsync(AppUser user);
         public Task DeleteUserAsync(int id);

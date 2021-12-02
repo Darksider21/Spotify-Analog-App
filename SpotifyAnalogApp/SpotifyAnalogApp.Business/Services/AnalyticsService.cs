@@ -1,5 +1,6 @@
 ﻿using SpotifyAnalogApp.Business.DTO;
 using SpotifyAnalogApp.Business.DTO.ModificationsDTOs;
+using SpotifyAnalogApp.Business.Exceptions;
 using SpotifyAnalogApp.Business.Mapper;
 using SpotifyAnalogApp.Business.Services.ServiceInterfaces;
 using SpotifyAnalogApp.Data.Models;
@@ -27,23 +28,37 @@ namespace SpotifyAnalogApp.Business.Services
 
         public async Task DeleteAllUserAnalyticsAsync(AppUser appUser)
         {
+            var user = await appUserRepository.GetUserByIdAsync(appUser.AppUserId);
+            if (user == null)
+            {
+                throw new InvalidUserIdException();
+            }
                 await analyticsRepository.DeleteAnalyticsAsync(appUser.AppUserId);
         }
 
         public async Task<IEnumerable<GenreAnalyticsModel>> GetAnalyticsByUserIdAsync(int userId)
         {
             var analytics = await analyticsRepository.GetAnalyticsByUserIdAsync(userId);
+            if (!analytics.Any())
+            {
+                throw new InvalidUserIdException();
+            }
 
             return ObjectMapper.Mapper.Map<IEnumerable<GenreAnalyticsModel>>(analytics);
         }
 
         public async Task<IEnumerable<GenreAnalyticsModel>> GetAnalyticsByUserIdsAsync(int[] userIds)
         {
+            var users = await appUserRepository.GetUsersByIdsAsync(userIds);
+            if (!users.Any())
+            {
+                throw new InvalidUserIdException();
+            }
             var analytics = await analyticsRepository.GetAnalyticsByUserIdsAsync(userIds);
 
             return ObjectMapper.Mapper.Map<IEnumerable<GenreAnalyticsModel>>(analytics);
         }
-
+        // methds add and remove songs parameters validated beforehands
         public async Task AddSongsToUserAnalyticsAsync(AppUser appUser, IEnumerable<Song> songs)
         {
             
@@ -84,7 +99,7 @@ namespace SpotifyAnalogApp.Business.Services
             }
         }
 
-        public async Task AddMissingAnalyticsForUser(AppUser appUser, IEnumerable<Song> songs)
+        private async Task AddMissingAnalyticsForUser(AppUser appUser, IEnumerable<Song> songs)
         {
             
             var usersAnalytics = await analyticsRepository.GetAnalyticsByUserIdAsync(appUser.AppUserId);

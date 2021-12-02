@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using SpotifyAnalogApp.Business.DTO;
+using SpotifyAnalogApp.Business.Exceptions;
 using SpotifyAnalogApp.Business.Mapper;
 using SpotifyAnalogApp.Business.Services.ServiceInterfaces;
 using SpotifyAnalogApp.Data.Models;
@@ -25,26 +26,33 @@ namespace SpotifyAnalogApp.Business.Services
 
         public async Task<SongModel> GetSongByIdAsync(int songId)
         {
-            var songsWithAuthorsList = await _songRepository.GetSongByIdAsync(songId);
+            var song = await _songRepository.GetSongByIdAsync(songId);
+            if (song == null)
+            {
+                throw new InvalidSongIdException();
+            }
 
-            var mapped = ObjectMapper.Mapper.Map<SongModel>(songsWithAuthorsList);
-            return mapped;
+            return ObjectMapper.Mapper.Map<SongModel>(song);
+            
         }
         public async Task<IEnumerable<SongModel>> GetSongsWithAuthorsListAsync()
         {
             var songsWithAuthorsList = await _songRepository.GetSongWithAuthorsListAsync();
 
-            var mapped = ObjectMapper.Mapper.Map<IEnumerable<SongModel>>(songsWithAuthorsList);
-            return mapped;
+            
+
+            return ObjectMapper.Mapper.Map<IEnumerable<SongModel>>(songsWithAuthorsList);
 
         }
         public async Task<IEnumerable<SongModel>> GetSongListAsync()
         {
             var songsList = await _songRepository.GetSongListAsync();
 
-
-            var mapped = ObjectMapper.Mapper.Map<IEnumerable<SongModel>>(songsList);
-            return mapped;
+            if (!songsList.Any())
+            {
+                throw new ContentNotFoundException();
+            }
+            return ObjectMapper.Mapper.Map<IEnumerable<SongModel>>(songsList);
         }
 
         

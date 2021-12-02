@@ -25,6 +25,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using System.Text;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.AspNetCore.Identity;
+using SpotifyAnalogApp.Web.Middleware;
 
 namespace SpotifyAnalogApp
 {
@@ -75,7 +76,7 @@ namespace SpotifyAnalogApp
             services.AddScoped<IAuthorRepository, AuthorRepository>();
             services.AddScoped<IGenreRepository, GenreRepository>();
             services.AddScoped<ISongRepository, SongRepository>();
-            services.AddScoped<IAppUserRepository, UserRepository>();
+            services.AddScoped<IAppUserRepository, AppUserRepository>();
             services.AddScoped<IPlaylistRepository, PlaylistRepository>();
             services.AddScoped<IAnalyticsRepository, AnalyticsRepository>();
 
@@ -130,13 +131,13 @@ namespace SpotifyAnalogApp
                 app.UseSwagger();
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "SpotifyAnalogApp v1"));
             }
-
+            ExceptionMiddlewareExtensions.ConfigureExceptionHandler(app,env);
             app.UseHttpsRedirection();
 
             app.UseRouting();
             app.UseAuthentication();
             app.UseAuthorization();
-
+            
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();

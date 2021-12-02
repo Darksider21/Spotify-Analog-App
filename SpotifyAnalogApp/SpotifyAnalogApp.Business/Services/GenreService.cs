@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using SpotifyAnalogApp.Business.DTO;
+using SpotifyAnalogApp.Business.Exceptions;
 using SpotifyAnalogApp.Business.Mapper;
 using SpotifyAnalogApp.Business.Services.ServiceInterfaces;
 using SpotifyAnalogApp.Data.Models;
@@ -28,6 +29,10 @@ namespace SpotifyAnalogApp.Business.Services
         {
  
             var genreList = await genreRepository.GetAllGenresAsync();
+            if (!genreList.Any())
+            {
+                throw new ContentNotFoundException();
+            }
             var mapped = ObjectMapper.Mapper.Map<IEnumerable<GenreModel>>(genreList);
             return mapped;
         }

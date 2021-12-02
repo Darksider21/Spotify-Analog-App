@@ -46,9 +46,9 @@ namespace SpotifyAnalogApp.Web.Controllers
         }
         [HttpPost]
         [Route("createPlaylistForUser")]
-        public async Task<IActionResult> CreatePlaylist(int userId, string playlistName, [FromQuery] int[] songIds)
+        public async Task<IActionResult> CreatePlaylist([FromBody] CreatePlaylistModel playlistModel)
         {
-            var playlist = await playlistService.CreatePlaylistAsync(userId, songIds, playlistName);
+            var playlist = await playlistService.CreatePlaylistAsync(playlistModel);
 
             return Ok(playlist);
         }

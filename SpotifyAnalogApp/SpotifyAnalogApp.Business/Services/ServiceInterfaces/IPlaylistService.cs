@@ -15,7 +15,7 @@ namespace SpotifyAnalogApp.Business.Services.ServiceInterfaces
         public Task<PlaylistModel> GetPlaylistByIdAsync(int playlistId);
         public Task<IEnumerable<PlaylistModel>> GetPlaylistsByUserIdAsync(int[] userId);
 
-        public Task<PlaylistModel> CreatePlaylistAsync(int userId, int[] songsid, string playlistName);
+        public Task<PlaylistModel> CreatePlaylistAsync(CreatePlaylistModel playlistModel);
         public Task<PlaylistModel> AddSongsToPlaylistAsync(RequestPlaylistModel playlistModel);
         public Task<PlaylistModel> RemoveSongsFromPlaylistAsync(RequestPlaylistModel playlistModel);
 

@@ -1,5 +1,8 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using SpotifyAnalogApp.Business.Exceptions;
 using SpotifyAnalogApp.Business.Services.ServiceInterfaces;
 using System;
 using System.Collections.Generic;
@@ -28,14 +31,11 @@ namespace SpotifyAnalogApp.Web.Controllers
         public async Task<IActionResult> GetUserAnalytics(int userId)
         {
             var analytics = await analyticsService.GetAnalyticsByUserIdAsync(userId);
-            if (analytics.Any())
-            {
-                return Ok(analytics);
-            }
-            else
-            {
-                return NoContent();
-            }
+            
+            
+            return Ok(analytics);
+            
+            
         }
 
         [HttpGet]

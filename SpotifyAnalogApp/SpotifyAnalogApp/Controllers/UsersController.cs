@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using SpotifyAnalogApp.Business.DTO.RequestDto;
+using SpotifyAnalogApp.Business.Exceptions;
 using SpotifyAnalogApp.Business.Services.ServiceInterfaces;
 using SpotifyAnalogApp.Data.Repositiry.Base;
 using System;
@@ -49,11 +50,17 @@ namespace SpotifyAnalogApp.Web.Controllers
 
         [HttpPost]
         [Route("createUser")]
-        public async Task<IActionResult> CreateUser(string name , string email)
+        public async Task<IActionResult> CreateUser([FromBody]CreateUserModel userModel)
         {
-           var user =  await userService.CreateUserAsync(name, email);
+            if (ModelState.IsValid)
+            {
+                var user = await userService.CreateUserAsync(userModel.Name, userModel.Email);
 
-            return new ObjectResult(user) { StatusCode=StatusCodes.Status201Created};
+                return new ObjectResult(user) { StatusCode = StatusCodes.Status201Created };
+            }
+
+            return BadRequest();
+          
         }
         
         
@@ -72,17 +79,28 @@ namespace SpotifyAnalogApp.Web.Controllers
 
         [HttpPost]
         [Route("addsongstousersfavorites")]
-        public async Task<IActionResult> AddSongsToUsersFavorites(int userId , [FromBody]int[] songIds)
+        public async Task<IActionResult> AddSongsToUsersFavorites([FromBody] ChangeUsersFavoriteSongsModel model)
         {
-            var user = await userService.AddSongsToUsersFavoritesAsync(userId, songIds);
-            return Ok(user);
+            if (ModelState.IsValid)
+            {
+                var user = await userService.AddSongsToUsersFavoritesAsync(model.UserId, model.SongIds);
+                return Ok(user);
+            }
+
+            return BadRequest();
+            
         }
         [HttpDelete]
         [Route("RemoveSongsFromUsersFavorites")]
-        public async Task<IActionResult> RemoveSongsFromUsersFavorites(int userId, [FromBody] int[] songIds)
+        public async Task<IActionResult> RemoveSongsFromUsersFavorites([FromBody] ChangeUsersFavoriteSongsModel model)
         {
-            var user = await userService.RemoveSongsFromUsersFavoritesAsync(userId, songIds);
-            return Ok(user);
+            if (ModelState.IsValid)
+            {
+                var user = await userService.AddSongsToUsersFavoritesAsync(model.UserId, model.SongIds);
+                return Ok(user);
+            }
+
+            return BadRequest();
         }
 
         [HttpDelete]

@@ -1,5 +1,6 @@
 ﻿using SpotifyAnalogApp.Business.DTO;
 using SpotifyAnalogApp.Business.DTO.RequestDto;
+using SpotifyAnalogApp.Business.Exceptions;
 using SpotifyAnalogApp.Business.Mapper;
 using SpotifyAnalogApp.Business.Services.ServiceInterfaces;
 using SpotifyAnalogApp.Data.Models;
@@ -28,12 +29,20 @@ namespace SpotifyAnalogApp.Business.Services
             
         }
 
-        public async Task<PlaylistModel> CreatePlaylistAsync(int userId, int[] songsid , string playlistName)
+        public async Task<PlaylistModel> CreatePlaylistAsync(CreatePlaylistModel playlistModel)
         {
-            var SongsToAdd = await songRepository.GetSongsByIdsAsync(songsid);
-            var user = await userRepository.GetUserByIdAsync(userId);
+            var user = await userRepository.GetUserByIdAsync(playlistModel.UserId);
+            if (user==null)
+            {
+                throw new InvalidUserIdException();
+            }
+            var SongsToAdd = await songRepository.GetSongsByIdsAsync(playlistModel.SongsIds);
+            if (!SongsToAdd.Any())
+            {
+                throw new InvalidSongIdException();
+            }
             SongsToAdd = SongsToAdd.Distinct();
-            var newPlaylist = new Playlist() { PlaylistName= playlistName , SongsInPlaylist = SongsToAdd.ToList() , User = user};
+            var newPlaylist = new Playlist() { PlaylistName= playlistModel.PlaylistName , SongsInPlaylist = SongsToAdd.ToList() , User = user};
 
             await analyticsService.AddSongsToUserAnalyticsAsync(user,SongsToAdd);
             await playlistRepository.CreatePlaylistForUserAsync(newPlaylist);
@@ -46,6 +55,10 @@ namespace SpotifyAnalogApp.Business.Services
         public async Task<IEnumerable<PlaylistModel>> GetAllPlaylistsAsync()
         {
             var playlists = await playlistRepository.GetPlaylistsAsync();
+            if (!playlists.Any())
+            {
+                throw new ContentNotFoundException();
+            }
 
             var mapped = ObjectMapper.Mapper.Map<IEnumerable<PlaylistModel>>(playlists);
 
@@ -56,6 +69,10 @@ namespace SpotifyAnalogApp.Business.Services
         public async Task<PlaylistModel> GetPlaylistByIdAsync(int playlistId)
         {
             var playlist =  await playlistRepository.GetPlaylistByIdAsync(playlistId);
+            if (playlist == null)
+            {
+                throw new InvalidPlaylistIdException();
+            }
 
             return ObjectMapper.Mapper.Map<PlaylistModel>(playlist);
 
@@ -66,6 +83,10 @@ namespace SpotifyAnalogApp.Business.Services
         public  async Task<IEnumerable<PlaylistModel>> GetPlaylistsByUserIdAsync(int[] userId)
         {
             var playlists = await playlistRepository.GetPlaylistsByUserIdAsync(userId);
+            if (!playlists.Any())
+            {
+                throw new InvalidUserIdException();
+            }
             return ObjectMapper.Mapper.Map<IEnumerable<PlaylistModel>>(playlists);
         }
 
@@ -73,7 +94,17 @@ namespace SpotifyAnalogApp.Business.Services
         {
 
             var songsToWorkWith = await songRepository.GetSongsByIdsAsync(playlistModel.SongsIds);
+
+            if (!songsToWorkWith.Any())
+            {
+                throw new InvalidSongIdException();
+            }
+
             var originalPlaylist = await playlistRepository.GetPlaylistByIdAsync(playlistModel.PlaylistId);
+            if (originalPlaylist == null)
+            {
+                throw new InvalidPlaylistIdException();
+            }
             List<Song> newSongs = new List<Song>();
 
             newSongs.AddRange(originalPlaylist.SongsInPlaylist);
@@ -96,7 +127,19 @@ namespace SpotifyAnalogApp.Business.Services
         public async Task<PlaylistModel> RemoveSongsFromPlaylistAsync(RequestPlaylistModel playlistModel)
         {
             var songsToWorkWith = await songRepository.GetSongsByIdsAsync(playlistModel.SongsIds);
+
+            if (!songsToWorkWith.Any())
+            {
+                throw new InvalidSongIdException();
+            }
+
             var originalPlaylist = await playlistRepository.GetPlaylistByIdAsync(playlistModel.PlaylistId);
+
+            if (originalPlaylist == null)
+            {
+                throw new InvalidPlaylistIdException();
+            }
+
             List<Song> newSongs = new List<Song>();
             newSongs.AddRange(originalPlaylist.SongsInPlaylist);
 
@@ -117,19 +160,19 @@ namespace SpotifyAnalogApp.Business.Services
 
         public async Task DeletePlaylistAsync(int playlistId)
         {
-            if (!String.IsNullOrEmpty(playlistId.ToString()))
-            {
-                var playlist = await playlistRepository.GetPlaylistByIdAsync(playlistId);
-
+            
+            
+            var playlist = await playlistRepository.GetPlaylistByIdAsync(playlistId);
                 
-                if (playlist != null)
-                {
-                    var user = playlist.User;
-                    await analyticsService.RemoveSongsFromUserAnalyticsAsync(user, playlist.SongsInPlaylist);
-                    await playlistRepository.DeletePlaylistAsync(playlist);
-
-                }
+                
+            if (playlist != null)
+            {
+                throw new InvalidPlaylistIdException();
             }
+            
+            var user = playlist.User;
+            await analyticsService.RemoveSongsFromUserAnalyticsAsync(user, playlist.SongsInPlaylist);
+            await playlistRepository.DeletePlaylistAsync(playlist);
             
         }
 
