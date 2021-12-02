@@ -1,5 +1,6 @@
 ﻿using SpotifyAnalogApp.Business.DTO;
 using SpotifyAnalogApp.Business.DTO.ModificationsDTOs;
+using SpotifyAnalogApp.Business.Exceptions;
 using SpotifyAnalogApp.Business.Mapper;
 using SpotifyAnalogApp.Business.Services.ServiceInterfaces;
 using SpotifyAnalogApp.Data.Models;
@@ -27,18 +28,32 @@ namespace SpotifyAnalogApp.Business.Services
 
         public async Task DeleteAllUserAnalyticsAsync(AppUser appUser)
         {
+            var user = await appUserRepository.GetUserByIdAsync(appUser.AppUserId);
+            if (user == null)
+            {
+                throw new BaseCustomException(404, "No User avaliable for this id");
+            }
                 await analyticsRepository.DeleteAnalyticsAsync(appUser.AppUserId);
         }
 
         public async Task<IEnumerable<GenreAnalyticsModel>> GetAnalyticsByUserIdAsync(int userId)
         {
             var analytics = await analyticsRepository.GetAnalyticsByUserIdAsync(userId);
+            if (!analytics.Any())
+            {
+                throw new BaseCustomException(404, "No analytics availiable for this user id");
+            }
 
             return ObjectMapper.Mapper.Map<IEnumerable<GenreAnalyticsModel>>(analytics);
         }
 
         public async Task<IEnumerable<GenreAnalyticsModel>> GetAnalyticsByUserIdsAsync(int[] userIds)
         {
+            var users = await appUserRepository.GetUsersByIdsAsync(userIds);
+            if (!users.Any())
+            {
+                throw new BaseCustomException(404, "No analytics Availiable for those user ids");
+            }
             var analytics = await analyticsRepository.GetAnalyticsByUserIdsAsync(userIds);
 
             return ObjectMapper.Mapper.Map<IEnumerable<GenreAnalyticsModel>>(analytics);

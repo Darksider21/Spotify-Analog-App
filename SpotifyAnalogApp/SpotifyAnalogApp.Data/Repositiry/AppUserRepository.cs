@@ -10,9 +10,9 @@ using System.Threading.Tasks;
 
 namespace SpotifyAnalogApp.Data.Repositiry
 {
-    public class UserRepository : Repository<AppUser>, IAppUserRepository
+    public class AppUserRepository : Repository<AppUser>, IAppUserRepository
     {
-        public UserRepository(SpotifyAnalogAppContext dbContext) : base(dbContext)
+        public AppUserRepository(SpotifyAnalogAppContext dbContext) : base(dbContext)
         {
         }
 
@@ -35,9 +35,21 @@ namespace SpotifyAnalogApp.Data.Repositiry
             
         }
 
+        public async Task<AppUser> GetUserByEmail(string email)
+        {
+            return await _dbContext.AppUsers.Where(x => x.Email.Equals(email)).FirstOrDefaultAsync();
+        }
+
         public async Task<AppUser> GetUserByIdAsync(int id)
         {
-            return await _dbContext.AppUsers.Where(x => x.AppUserId.Equals(id)).Include(x => x.UsersPlaylists).ThenInclude(x => x.SongsInPlaylist).Include(x => x.FavoriteSongs).FirstOrDefaultAsync();
+            return await _dbContext.AppUsers.Where(x => x.AppUserId.Equals(id))
+                .Include(x => x.UsersPlaylists).ThenInclude(x => x.SongsInPlaylist).Include(x => x.FavoriteSongs).FirstOrDefaultAsync();
+        }
+
+        public async Task<IEnumerable<AppUser>> GetUsersByIdsAsync(int[] ids)
+        {
+            return await _dbContext.AppUsers.Where(x => ids.Contains(x.AppUserId))
+                .Include(x => x.UsersPlaylists).ThenInclude(x => x.SongsInPlaylist).Include(x => x.FavoriteSongs).ToListAsync();
         }
 
         public async Task<IEnumerable<AppUser>> GetUsersListAsync()

@@ -1,6 +1,7 @@
 ﻿using SpotifyAnalogApp.Business.DTO;
 using SpotifyAnalogApp.Business.DTO.ModificationsDTOs;
 using SpotifyAnalogApp.Business.DTO.RequestDto;
+using SpotifyAnalogApp.Business.Exceptions;
 using SpotifyAnalogApp.Business.Mapper;
 using SpotifyAnalogApp.Business.Services.ServiceInterfaces;
 using SpotifyAnalogApp.Data.Models;
@@ -29,10 +30,19 @@ namespace SpotifyAnalogApp.Business.Services
             playlistRepository = playlistRepo;
             this.analyticsService = analyticsService;
         }
-        public  async  Task<AppUserModel> CreateUserAsync(string name, string Email)
+        public  async  Task<AppUserModel> CreateUserAsync(string name, string email)
         {
+            if (name == null || email == null)
+            {
+                throw new BaseCustomException(403, "Name and Email Required");
+            }
+            var userWithSameEmail = await userRepository.GetUserByEmail(email);
+            if (userWithSameEmail != null)
+            {
+                throw new BaseCustomException(403, "User With Same Email Exists");
+            }
             var now = DateTime.Now;
-            var user = new AppUser { Name = name, Email = Email, DateCreated = now};
+            var user = new AppUser { Name = name, Email = email, DateCreated = now};
            await  userRepository.CreateUserAsync(user);
             var mapped = ObjectMapper.Mapper.Map<AppUserModel>(user);
             return mapped;
@@ -41,22 +51,28 @@ namespace SpotifyAnalogApp.Business.Services
         public async Task DeleteUserAsync(int userId)
         {
             var user = await userRepository.GetUserByIdAsync(userId);
-            if (user != null)
+            if (user == null)
             {
-                var usersPlaylistsToDelete = await playlistRepository.GetPlaylistsByUserIdAsync(new int[] { userId });
-                foreach (var playlist in usersPlaylistsToDelete)
-                {
-                    await playlistRepository.DeletePlaylistAsync(playlist);
-                }
-                await analyticsService.DeleteAllUserAnalyticsAsync(user);
-                await userRepository.DeleteUserAsync(userId);
+                throw new BaseCustomException(404, "Invalid User Id");
             }
             
+            var usersPlaylistsToDelete = await playlistRepository.GetPlaylistsByUserIdAsync(new int[] { userId });
+            foreach (var playlist in usersPlaylistsToDelete)
+            {
+                await playlistRepository.DeletePlaylistAsync(playlist);
+            }
+            await analyticsService.DeleteAllUserAnalyticsAsync(user);
+            await userRepository.DeleteUserAsync(userId);
         }
 
         public  async Task<AppUserModel> GetUserByIdAsync(int userId)
         {
+
             var user = await userRepository.GetUserByIdAsync(userId);
+            if (user == null)
+            {
+                throw new BaseCustomException(404, "Invalid User ID");
+            }
             var mapped = ObjectMapper.Mapper.Map<AppUserModel>(user);
             return mapped;
         }
@@ -64,13 +80,25 @@ namespace SpotifyAnalogApp.Business.Services
         public async  Task<ICollection<AppUserModel>> GetUsersAsync()
         {
             var users = await userRepository.GetUsersListAsync();
+            if (!users.Any())
+            {
+                throw new BaseCustomException(404, "Invalid User IDs");
+            }
             var mapped = ObjectMapper.Mapper.Map<ICollection<AppUserModel>>(users);
             return mapped;
         }
         public async Task<AppUserModel> AddSongsToUsersFavoritesAsync(int userId, int[] songsIds)
         {
-            var songsToWorkWith = await songRepository.GetSongsByIdsAsync(songsIds);
             var user = await userRepository.GetUserByIdAsync(userId);
+            if (user == null)
+            {
+                throw new BaseCustomException(404,"user Not Found");
+            }
+            var songsToWorkWith = await songRepository.GetSongsByIdsAsync(songsIds);
+            if (!songsToWorkWith.Any())
+            {
+                throw new BaseCustomException(404, "Songs Not Found");
+            }
             IEnumerable<Song> usersSongs = new List<Song>();
 
             List<Song> newSongs = new List<Song>() { };
@@ -100,8 +128,18 @@ namespace SpotifyAnalogApp.Business.Services
 
         public  async Task<AppUserModel> RemoveSongsFromUsersFavoritesAsync(int userId, int[] songsIds)
         {
-            var songsToWorkWith =  await songRepository.GetSongsByIdsAsync(songsIds);
+
             var user = await userRepository.GetUserByIdAsync(userId);
+            if (user == null)
+            {
+                throw new BaseCustomException(404, "user Not Found");
+            }
+            var songsToWorkWith = await songRepository.GetSongsByIdsAsync(songsIds);
+            if (!songsToWorkWith.Any())
+            {
+                throw new BaseCustomException(404, "Songs Not Found");
+            }
+            
             IEnumerable<Song> usersSongs = user.FavoriteSongs;
 
             List<Song> newSongs = new List<Song>() { };
@@ -125,6 +163,10 @@ namespace SpotifyAnalogApp.Business.Services
         public async Task<AppUserModel> UpdateUserInfoAsync(RequestUserModel userModel)
         {
             var currentuser = await userRepository.GetUserByIdAsync(userModel.AppUserId);
+            if (currentuser == null)
+            {
+                throw new BaseCustomException(404, "user Not Found");
+            }
 
             ModifyUserModel model = new ModifyUserModel { Name = userModel.Name, Email = userModel.Email };
 
