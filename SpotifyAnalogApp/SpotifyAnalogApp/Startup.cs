@@ -84,6 +84,7 @@ namespace SpotifyAnalogApp
             services.AddScoped<ISongService, SongService>();
             services.AddScoped<IGenreService, GenreService>();
             services.AddScoped<IAuthorService, AuthorService>();
+            services.AddScoped<IRandomService, RandomService>();
             services.AddScoped<IAppUserService, AppUserService>();
             services.AddScoped<IPlaylistService, PlaylistService>();
             services.AddScoped<IAnalyticsService, AnalyticsService>();

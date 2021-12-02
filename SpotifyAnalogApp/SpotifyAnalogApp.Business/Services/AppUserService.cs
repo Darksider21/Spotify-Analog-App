@@ -55,13 +55,6 @@ namespace SpotifyAnalogApp.Business.Services
             {
                 throw new InvalidUserIdException();
             }
-            
-            var usersPlaylistsToDelete = await playlistRepository.GetPlaylistsByUserIdAsync(new int[] { userId });
-            foreach (var playlist in usersPlaylistsToDelete)
-            {
-                await playlistRepository.DeletePlaylistAsync(playlist);
-            }
-            await analyticsService.DeleteAllUserAnalyticsAsync(user);
             await userRepository.DeleteUserAsync(userId);
         }
 

@@ -30,31 +30,32 @@ namespace SpotifyAnalogApp.Data.Repositiry
             var user = await GetUserByIdAsync(userId);
             if (user != null)
             {
-                await DeleteAsync(user);
+                user.IsDeleted = true;
+                await UpdateAsync(user);
             }
             
         }
 
         public async Task<AppUser> GetUserByEmail(string email)
         {
-            return await _dbContext.AppUsers.Where(x => x.Email.Equals(email)).FirstOrDefaultAsync();
+            return await _dbContext.AppUsers.Where(x => x.Email.Equals(email) && x.IsDeleted != true).FirstOrDefaultAsync();
         }
 
         public async Task<AppUser> GetUserByIdAsync(int id)
         {
-            return await _dbContext.AppUsers.Where(x => x.AppUserId.Equals(id))
+            return await _dbContext.AppUsers.Where(x => x.AppUserId.Equals(id) && x.IsDeleted != true)
                 .Include(x => x.UsersPlaylists).ThenInclude(x => x.SongsInPlaylist).Include(x => x.FavoriteSongs).FirstOrDefaultAsync();
         }
 
         public async Task<IEnumerable<AppUser>> GetUsersByIdsAsync(int[] ids)
         {
-            return await _dbContext.AppUsers.Where(x => ids.Contains(x.AppUserId))
+            return await _dbContext.AppUsers.Where(x => ids.Contains(x.AppUserId) && x.IsDeleted != true)
                 .Include(x => x.UsersPlaylists).ThenInclude(x => x.SongsInPlaylist).Include(x => x.FavoriteSongs).ToListAsync();
         }
 
         public async Task<IEnumerable<AppUser>> GetUsersListAsync()
         {
-            return await GetAllAsync();
+            return await _dbContext.AppUsers.Where(x => x.IsDeleted != true).ToListAsync();
         }
 
         

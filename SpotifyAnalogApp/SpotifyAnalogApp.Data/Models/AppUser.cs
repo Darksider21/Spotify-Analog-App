@@ -18,6 +18,7 @@ namespace SpotifyAnalogApp.Data.Models
         [Required]
         [EmailAddress]
         public string Email { get; set; }
+        public bool IsDeleted { get; set; }
 
         public ICollection<GenreAnalytics> Analytics { get; set; }
         public ICollection<Song> FavoriteSongs { get; set; }

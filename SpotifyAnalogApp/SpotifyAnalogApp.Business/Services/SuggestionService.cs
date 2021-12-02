@@ -19,12 +19,15 @@ namespace SpotifyAnalogApp.Business.Services
         private IAppUserRepository appUserRepository;
         private ISongRepository songRepository;
         private IAnalyticsRepository analyticsRepository;
+        private IRandomService randomService;
 
-        public SuggestionService(IAppUserRepository appUserRepository,ISongRepository songRepository,IAnalyticsRepository analyticsRepository)
+        public SuggestionService(IAppUserRepository appUserRepository,ISongRepository songRepository,
+            IAnalyticsRepository analyticsRepository , IRandomService randomService)
         {
             this.analyticsRepository = analyticsRepository;
             this.songRepository = songRepository;
             this.appUserRepository = appUserRepository;
+            this.randomService = randomService;
         }
 
         public async Task<IEnumerable<SongModel>> GetSuggestionSongsForUser(int userId, int amountOfsongs)
@@ -59,7 +62,7 @@ namespace SpotifyAnalogApp.Business.Services
                 for (int i = 0; i < calculatedProportions.Length; i++)
                 {
                     var item = calculatedProportions[i];
-                    var randomNumber = ThreadSafeRandom.ThisThreadsRandom.Next(0, 101);
+                    var randomNumber = randomService.GetRandom().Next(0, 101);
                     if (randomNumber <= item.Percentage)
                     {
                         var songToAdd = songsToWorkWith.Where(x => x.Genre.GenreName.Equals(item.GenreName)).FirstOrDefault();
