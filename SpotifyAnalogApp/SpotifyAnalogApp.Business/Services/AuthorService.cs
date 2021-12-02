@@ -46,7 +46,7 @@ namespace SpotifyAnalogApp.Business.Services
 
             if (authorList.Any())
             {
-                throw new BaseCustomException(404, "Unable to Fetch Authors");
+                throw new ContentNotFoundException();
             }
             
             var mapped = ObjectMapper.Mapper.Map<IEnumerable<AuthorModel>>(authorList);

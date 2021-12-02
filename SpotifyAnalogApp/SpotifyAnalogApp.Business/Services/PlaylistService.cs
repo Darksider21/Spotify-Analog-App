@@ -34,12 +34,12 @@ namespace SpotifyAnalogApp.Business.Services
             var user = await userRepository.GetUserByIdAsync(playlistModel.UserId);
             if (user==null)
             {
-                throw new BaseCustomException(404, "Invalid User Id");
+                throw new InvalidUserIdException();
             }
             var SongsToAdd = await songRepository.GetSongsByIdsAsync(playlistModel.SongsIds);
             if (!SongsToAdd.Any())
             {
-                throw new BaseCustomException(404, "Invalid Songs Ids");
+                throw new InvalidSongIdException();
             }
             SongsToAdd = SongsToAdd.Distinct();
             var newPlaylist = new Playlist() { PlaylistName= playlistModel.PlaylistName , SongsInPlaylist = SongsToAdd.ToList() , User = user};
@@ -57,7 +57,7 @@ namespace SpotifyAnalogApp.Business.Services
             var playlists = await playlistRepository.GetPlaylistsAsync();
             if (!playlists.Any())
             {
-                throw new BaseCustomException(204, "No playlists Avaliable");
+                throw new ContentNotFoundException();
             }
 
             var mapped = ObjectMapper.Mapper.Map<IEnumerable<PlaylistModel>>(playlists);
@@ -71,7 +71,7 @@ namespace SpotifyAnalogApp.Business.Services
             var playlist =  await playlistRepository.GetPlaylistByIdAsync(playlistId);
             if (playlist == null)
             {
-                throw new BaseCustomException(404, "Invalid playlist Id");
+                throw new InvalidPlaylistIdException();
             }
 
             return ObjectMapper.Mapper.Map<PlaylistModel>(playlist);
@@ -83,6 +83,10 @@ namespace SpotifyAnalogApp.Business.Services
         public  async Task<IEnumerable<PlaylistModel>> GetPlaylistsByUserIdAsync(int[] userId)
         {
             var playlists = await playlistRepository.GetPlaylistsByUserIdAsync(userId);
+            if (!playlists.Any())
+            {
+                throw new InvalidUserIdException();
+            }
             return ObjectMapper.Mapper.Map<IEnumerable<PlaylistModel>>(playlists);
         }
 
@@ -93,13 +97,13 @@ namespace SpotifyAnalogApp.Business.Services
 
             if (!songsToWorkWith.Any())
             {
-                throw new BaseCustomException(404, "invalid songs ids");
+                throw new InvalidSongIdException();
             }
 
             var originalPlaylist = await playlistRepository.GetPlaylistByIdAsync(playlistModel.PlaylistId);
             if (originalPlaylist == null)
             {
-                throw new BaseCustomException(404, "Invalid playlist Id");
+                throw new InvalidPlaylistIdException();
             }
             List<Song> newSongs = new List<Song>();
 
@@ -126,14 +130,14 @@ namespace SpotifyAnalogApp.Business.Services
 
             if (!songsToWorkWith.Any())
             {
-                throw new BaseCustomException(404, "invalid songs ids");
+                throw new InvalidSongIdException();
             }
 
             var originalPlaylist = await playlistRepository.GetPlaylistByIdAsync(playlistModel.PlaylistId);
 
             if (originalPlaylist == null)
             {
-                throw new BaseCustomException(404, "Invalid playlist Id");
+                throw new InvalidPlaylistIdException();
             }
 
             List<Song> newSongs = new List<Song>();
@@ -163,7 +167,7 @@ namespace SpotifyAnalogApp.Business.Services
                 
             if (playlist != null)
             {
-                throw new BaseCustomException(404, "invalid Playlist  Id");
+                throw new InvalidPlaylistIdException();
             }
             
             var user = playlist.User;

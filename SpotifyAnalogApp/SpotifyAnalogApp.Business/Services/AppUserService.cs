@@ -34,12 +34,12 @@ namespace SpotifyAnalogApp.Business.Services
         {
             if (name == null || email == null)
             {
-                throw new BaseCustomException(403, "Name and Email Required");
+                throw new NullFieldsException();
             }
             var userWithSameEmail = await userRepository.GetUserByEmail(email);
             if (userWithSameEmail != null)
             {
-                throw new BaseCustomException(403, "User With Same Email Exists");
+                throw new DuplicateEmailException();
             }
             var now = DateTime.Now;
             var user = new AppUser { Name = name, Email = email, DateCreated = now};
@@ -53,7 +53,7 @@ namespace SpotifyAnalogApp.Business.Services
             var user = await userRepository.GetUserByIdAsync(userId);
             if (user == null)
             {
-                throw new BaseCustomException(404, "Invalid User Id");
+                throw new InvalidUserIdException();
             }
             
             var usersPlaylistsToDelete = await playlistRepository.GetPlaylistsByUserIdAsync(new int[] { userId });
@@ -71,7 +71,7 @@ namespace SpotifyAnalogApp.Business.Services
             var user = await userRepository.GetUserByIdAsync(userId);
             if (user == null)
             {
-                throw new BaseCustomException(404, "Invalid User ID");
+                throw new InvalidUserIdException();
             }
             var mapped = ObjectMapper.Mapper.Map<AppUserModel>(user);
             return mapped;
@@ -82,7 +82,7 @@ namespace SpotifyAnalogApp.Business.Services
             var users = await userRepository.GetUsersListAsync();
             if (!users.Any())
             {
-                throw new BaseCustomException(404, "Invalid User IDs");
+                throw new InvalidUserIdException();
             }
             var mapped = ObjectMapper.Mapper.Map<ICollection<AppUserModel>>(users);
             return mapped;
@@ -92,12 +92,12 @@ namespace SpotifyAnalogApp.Business.Services
             var user = await userRepository.GetUserByIdAsync(userId);
             if (user == null)
             {
-                throw new BaseCustomException(404,"user Not Found");
+                throw new InvalidUserIdException();
             }
             var songsToWorkWith = await songRepository.GetSongsByIdsAsync(songsIds);
             if (!songsToWorkWith.Any())
             {
-                throw new BaseCustomException(404, "Songs Not Found");
+                throw new InvalidSongIdException();
             }
             IEnumerable<Song> usersSongs = new List<Song>();
 
@@ -132,12 +132,12 @@ namespace SpotifyAnalogApp.Business.Services
             var user = await userRepository.GetUserByIdAsync(userId);
             if (user == null)
             {
-                throw new BaseCustomException(404, "user Not Found");
+                throw new InvalidUserIdException();
             }
             var songsToWorkWith = await songRepository.GetSongsByIdsAsync(songsIds);
             if (!songsToWorkWith.Any())
             {
-                throw new BaseCustomException(404, "Songs Not Found");
+                throw new InvalidSongIdException();
             }
             
             IEnumerable<Song> usersSongs = user.FavoriteSongs;
@@ -165,7 +165,7 @@ namespace SpotifyAnalogApp.Business.Services
             var currentuser = await userRepository.GetUserByIdAsync(userModel.AppUserId);
             if (currentuser == null)
             {
-                throw new BaseCustomException(404, "user Not Found");
+                throw new InvalidUserIdException();
             }
 
             ModifyUserModel model = new ModifyUserModel { Name = userModel.Name, Email = userModel.Email };

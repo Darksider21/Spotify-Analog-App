@@ -6,10 +6,9 @@ using System.Threading.Tasks;
 
 namespace SpotifyAnalogApp.Business.Exceptions
 {
-   public class JsonReaderException : Exception
+    public class NullFieldsException : Exception
     {
-
-        public JsonReaderException()
+        public NullFieldsException()
         {
 
         }

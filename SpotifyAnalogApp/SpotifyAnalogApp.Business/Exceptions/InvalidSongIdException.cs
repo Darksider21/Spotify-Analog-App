@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 
 namespace SpotifyAnalogApp.Business.Exceptions
 {
-    public class NotFoundException : Exception
+    public class InvalidSongIdException :Exception
     {
-        public NotFoundException()
+        public InvalidSongIdException()
         {
-            
+
         }
     }
 }

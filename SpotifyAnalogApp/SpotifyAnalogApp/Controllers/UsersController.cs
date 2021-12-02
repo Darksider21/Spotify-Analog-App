@@ -100,7 +100,7 @@ namespace SpotifyAnalogApp.Web.Controllers
                 return Ok(user);
             }
 
-            throw new JsonReaderException();
+            return BadRequest();
         }
 
         [HttpDelete]

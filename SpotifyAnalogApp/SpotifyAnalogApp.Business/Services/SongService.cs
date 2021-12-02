@@ -29,7 +29,7 @@ namespace SpotifyAnalogApp.Business.Services
             var song = await _songRepository.GetSongByIdAsync(songId);
             if (song == null)
             {
-                throw new BaseCustomException(404, "Invalid Song Id");
+                throw new InvalidSongIdException();
             }
 
             return ObjectMapper.Mapper.Map<SongModel>(song);
@@ -50,7 +50,7 @@ namespace SpotifyAnalogApp.Business.Services
 
             if (!songsList.Any())
             {
-                throw new BaseCustomException(402, "Unable to fetch songs");
+                throw new ContentNotFoundException();
             }
             return ObjectMapper.Mapper.Map<IEnumerable<SongModel>>(songsList);
         }

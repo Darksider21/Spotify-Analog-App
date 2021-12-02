@@ -31,7 +31,7 @@ namespace SpotifyAnalogApp.Business.Services
             var genreList = await genreRepository.GetAllGenresAsync();
             if (!genreList.Any())
             {
-                throw new BaseCustomException(404, "Unable to Fetch Genres");
+                throw new ContentNotFoundException();
             }
             var mapped = ObjectMapper.Mapper.Map<IEnumerable<GenreModel>>(genreList);
             return mapped;

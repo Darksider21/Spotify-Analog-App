@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace SpotifyAnalogApp.Business.Exceptions
 {
-    public class AccessForbidenException :Exception
+    public class InvalidPlaylistIdException :Exception
     {
-        public AccessForbidenException()
+        public InvalidPlaylistIdException()
         {
 
         }

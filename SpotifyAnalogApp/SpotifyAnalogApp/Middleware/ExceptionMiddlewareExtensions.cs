@@ -25,22 +25,17 @@ namespace SpotifyAnalogApp.Web.Middleware
                     Exception error = context.Features.Get<IExceptionHandlerFeature>().Error;
                     //logger.LogError($"Exception was thrown: {error}");
 
-                    if (error is AccessForbidenException)
-                    {
-                        context.Response.StatusCode = (int)HttpStatusCode.Forbidden;
-                        return;
-                    }
-                    if (error is NotFoundException)
-                    {
-                        context.Response.StatusCode = (int)HttpStatusCode.NotFound;
-                        return;
-                    }
+                    
 
                     await (error switch
                     {
                         BaseCustomException e => FillContextResponseAsync((int)e.ErrorCode, e.Message),
-                        JsonReaderException e => FillContextResponseAsync(400,
-                            "Json validation failed. Please review inserted data."),
+                        InvalidUserIdException e => FillContextResponseAsync(400,"Invalid User Id"),
+                        InvalidSongIdException e => FillContextResponseAsync(400, "Invalid Song Id"),
+                        InvalidPlaylistIdException e => FillContextResponseAsync(400, "invalid Playlist Id"),
+                        ContentNotFoundException e => FillContextResponseAsync(404, "Content Not Found"),
+                        DuplicateEmailException e => FillContextResponseAsync(401, "Email Already Exists"),
+                        NullFieldsException e => FillContextResponseAsync(401, "Fields must not be null"),
                         _ => FillContextResponseAsync(500, "Oops! Something went wrong.", null,
                             HttpStatusCode.InternalServerError)
                     });

@@ -1,4 +1,5 @@
 ﻿using SpotifyAnalogApp.Business.DTO;
+using SpotifyAnalogApp.Business.Exceptions;
 using SpotifyAnalogApp.Business.Mapper;
 using SpotifyAnalogApp.Business.Services.ServiceInterfaces;
 using SpotifyAnalogApp.Data.Models;
@@ -31,11 +32,11 @@ namespace SpotifyAnalogApp.Business.Services
             var user = await appUserRepository.GetUserByIdAsync(userId);
             if (user == null)
             {
-                throw new Exception("Invalid User Id");
+                throw new InvalidUserIdException();
             }
             if (amountOfsongs <= 0)
             {
-                throw new Exception("invalid Amount Of songs");
+                throw new BaseCustomException(404, "amount of songs must be greater than 0");
             }
             
             var usersAnalytics = await analyticsRepository.GetAnalyticsByUserIdAsync(userId);
