@@ -44,13 +44,15 @@ namespace SpotifyAnalogApp.Data.Repositiry
         public async Task<AppUser> GetUserByIdAsync(int id)
         {
             return await _dbContext.AppUsers.Where(x => x.AppUserId.Equals(id) && x.IsDeleted != true)
-                .Include(x => x.UsersPlaylists).ThenInclude(x => x.SongsInPlaylist).Include(x => x.FavoriteSongs).FirstOrDefaultAsync();
+                .Include(x => x.UsersPlaylists).ThenInclude(x => x.SongsInPlaylist)
+                .Include(x => x.FavoriteSongs).Include(x=> x.DislikedSongs).ThenInclude(x=>x.Song.Author.Genre).FirstOrDefaultAsync();
         }
 
         public async Task<IEnumerable<AppUser>> GetUsersByIdsAsync(int[] ids)
         {
             return await _dbContext.AppUsers.Where(x => ids.Contains(x.AppUserId) && x.IsDeleted != true)
-                .Include(x => x.UsersPlaylists).ThenInclude(x => x.SongsInPlaylist).Include(x => x.FavoriteSongs).ToListAsync();
+                .Include(x => x.UsersPlaylists).ThenInclude(x => x.SongsInPlaylist).Include(x => x.FavoriteSongs)
+                .Include(x => x.DislikedSongs).ThenInclude(x => x.Song.Author.Genre).ToListAsync();
         }
 
         public async Task<IEnumerable<AppUser>> GetUsersListAsync()

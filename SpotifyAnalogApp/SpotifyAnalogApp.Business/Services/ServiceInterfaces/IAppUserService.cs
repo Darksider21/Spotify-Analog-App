@@ -19,8 +19,7 @@ namespace SpotifyAnalogApp.Business.Services.ServiceInterfaces
 
         public Task<AppUserModel> UpdateUserInfoAsync(RequestUserModel userModel);
 
-        public Task<AppUserModel> AddSongsToUsersFavoritesAsync(int userId, int[] songsIds);
-        public Task<AppUserModel> RemoveSongsFromUsersFavoritesAsync(int userId, int[] songsIds);
+        
 
         public Task DeleteUserAsync(int userId);
 

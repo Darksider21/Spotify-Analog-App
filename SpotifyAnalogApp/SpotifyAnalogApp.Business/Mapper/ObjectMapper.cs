@@ -51,6 +51,7 @@ namespace SpotifyAnalogApp.Business.Mapper
 
             CreateMap<Author, AuthorInSongModelModel>().ReverseMap();
             CreateMap<GenreAnalytics, GenreAnalyticsModel>().ReverseMap();
+            CreateMap<DislikedSong, DislikedSongModel>().ReverseMap();
 
 
 
