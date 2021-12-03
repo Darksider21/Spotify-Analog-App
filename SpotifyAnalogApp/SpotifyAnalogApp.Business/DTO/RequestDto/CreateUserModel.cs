@@ -11,7 +11,6 @@ namespace SpotifyAnalogApp.Business.DTO.RequestDto
     {
         [Required]
         
-
         public string Name { get; set; }
 
         [Required]

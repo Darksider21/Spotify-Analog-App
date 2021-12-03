@@ -13,7 +13,7 @@ namespace SpotifyAnalogApp.Business.Services.ServiceInterfaces
     {
         public Task<IEnumerable<PlaylistModel>> GetAllPlaylistsAsync();
         public Task<PlaylistModel> GetPlaylistByIdAsync(int playlistId);
-        public Task<IEnumerable<PlaylistModel>> GetPlaylistsByUserIdAsync(int[] userId);
+        public Task<IEnumerable<PlaylistModel>> GetPlaylistsByUserIdAsync(int[] userIds);
 
         public Task<PlaylistModel> CreatePlaylistAsync(CreatePlaylistModel playlistModel);
         public Task<PlaylistModel> AddSongsToPlaylistAsync(RequestPlaylistModel playlistModel);

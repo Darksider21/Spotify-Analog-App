@@ -392,7 +392,7 @@ namespace SpotifyAnalogApp.Data.Migrations
                     b.Property<DateTime>("ExpiryDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<bool>("IsRevorked")
+                    b.Property<bool>("IsRevoked")
                         .HasColumnType("bit");
 
                     b.Property<bool>("IsUsed")

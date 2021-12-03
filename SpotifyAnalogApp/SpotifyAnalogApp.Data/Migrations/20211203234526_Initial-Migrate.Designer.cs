@@ -10,8 +10,8 @@ using SpotifyAnalogApp.Data.Data;
 namespace SpotifyAnalogApp.Data.Migrations
 {
     [DbContext(typeof(SpotifyAnalogAppContext))]
-    [Migration("20211203152944_Dislikes")]
-    partial class Dislikes
+    [Migration("20211203234526_Initial-Migrate")]
+    partial class InitialMigrate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -394,7 +394,7 @@ namespace SpotifyAnalogApp.Data.Migrations
                     b.Property<DateTime>("ExpiryDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<bool>("IsRevorked")
+                    b.Property<bool>("IsRevoked")
                         .HasColumnType("bit");
 
                     b.Property<bool>("IsUsed")

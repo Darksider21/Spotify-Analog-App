@@ -28,6 +28,17 @@ namespace SpotifyAnalogApp.Business.Services
             this.dislikedSongRepository = dislikedSongRepository;
             this.analyticsService = analyticsService;
         }
+        public async Task<ICollection<DislikedSongModel>> GetDislikesByUserId(int userId)
+        {
+            var user = await userRepository.GetUserByIdAsync(userId);
+
+            if (user == null)
+            {
+                throw new InvalidUserIdException();
+            }
+            var usersDislikes = await dislikedSongRepository.GetDislikedSongsByUserIdAsync(userId);
+            return ObjectMapper.Mapper.Map<ICollection<DislikedSongModel>>(usersDislikes);
+        }
         public async Task<ICollection<DislikedSongModel>> AddSongsToUsersDislikesAsync(int userId, int[] songsId)
         {
             var user = await userRepository.GetUserByIdAsync(userId);
@@ -157,6 +168,5 @@ namespace SpotifyAnalogApp.Business.Services
             return mapped;
         }
 
-       
     }
 }

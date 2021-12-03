@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace SpotifyAnalogApp.Data.Migrations
 {
-    public partial class InitialCreate : Migration
+    public partial class InitialMigrate : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -15,7 +15,8 @@ namespace SpotifyAnalogApp.Data.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     DateCreated = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Email = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -210,7 +211,7 @@ namespace SpotifyAnalogApp.Data.Migrations
                     Token = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     JwtId = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     IsUsed = table.Column<bool>(type: "bit", nullable: false),
-                    IsRevorked = table.Column<bool>(type: "bit", nullable: false),
+                    IsRevoked = table.Column<bool>(type: "bit", nullable: false),
                     AddedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     ExpiryDate = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
@@ -324,6 +325,32 @@ namespace SpotifyAnalogApp.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "DislikedSongs",
+                columns: table => new
+                {
+                    DislikedSongId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    SongId = table.Column<int>(type: "int", nullable: true),
+                    AppUserId = table.Column<int>(type: "int", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_DislikedSongs", x => x.DislikedSongId);
+                    table.ForeignKey(
+                        name: "FK_DislikedSongs_AppUsers_AppUserId",
+                        column: x => x.AppUserId,
+                        principalTable: "AppUsers",
+                        principalColumn: "AppUserId",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_DislikedSongs_Songs_SongId",
+                        column: x => x.SongId,
+                        principalTable: "Songs",
+                        principalColumn: "SongId",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "PlaylistSong",
                 columns: table => new
                 {
@@ -397,6 +424,16 @@ namespace SpotifyAnalogApp.Data.Migrations
                 column: "GenreId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_DislikedSongs_AppUserId",
+                table: "DislikedSongs",
+                column: "AppUserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_DislikedSongs_SongId",
+                table: "DislikedSongs",
+                column: "SongId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_GenreAnalytics_AppUserId",
                 table: "GenreAnalytics",
                 column: "AppUserId");
@@ -451,6 +488,9 @@ namespace SpotifyAnalogApp.Data.Migrations
 
             migrationBuilder.DropTable(
                 name: "AspNetUserTokens");
+
+            migrationBuilder.DropTable(
+                name: "DislikedSongs");
 
             migrationBuilder.DropTable(
                 name: "GenreAnalytics");

@@ -45,12 +45,14 @@ namespace SpotifyAnalogApp.Data.Repositiry
 
         public async Task<IEnumerable<GenreAnalytics>> GetAnalyticsByUserIdAsync(int userId)
         {
-            return await _dbContext.GenreAnalytics.Where(x => x.AppUser.AppUserId.Equals(userId)).Include(x => x.Genre).Include(x => x.AppUser).ToListAsync();
+            return await _dbContext.GenreAnalytics.Where(x => x.AppUser.AppUserId.Equals(userId) && x.AppUser.IsDeleted == false)
+                .Include(x => x.Genre).Include(x => x.AppUser).ToListAsync();
         }
 
         public async Task<IEnumerable<GenreAnalytics>> GetAnalyticsByUserIdsAsync(int[] userIds)
         {
-            return await _dbContext.GenreAnalytics.Where(x => userIds.Contains(x.AppUser.AppUserId)).Include(x => x.Genre).Include(x => x.AppUser).ToListAsync();
+            return await _dbContext.GenreAnalytics.Where(x => userIds.Contains(x.AppUser.AppUserId) && x.AppUser.IsDeleted == false)
+                .Include(x => x.Genre).Include(x => x.AppUser).ToListAsync();
         }
 
         public async Task UpdateAnalyticsAsync(GenreAnalytics obj)

@@ -9,6 +9,7 @@ namespace SpotifyAnalogApp.Business.Services.ServiceInterfaces
 {
     public interface IRatingService
     {
+        public Task<ICollection<DislikedSongModel>> GetDislikesByUserId(int userId);
         public Task<AppUserModel> AddSongsToUsersFavoritesAsync(int userId, int[] songsIds);
         public Task<AppUserModel> RemoveSongsFromUsersFavoritesAsync(int userId, int[] songsIds);
         public Task<ICollection<DislikedSongModel>> AddSongsToUsersDislikesAsync(int userId, int[] songsId);

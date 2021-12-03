@@ -107,7 +107,17 @@ namespace SpotifyAnalogApp.Web.Controllers
             return BadRequest();
         }
 
-
+        [HttpGet]
+        [Route("GetUsersDislikes")]
+        public async Task<IActionResult> GetUsersDislikes(int userId)
+        {
+            var dislikes = await ratingService.GetDislikesByUserId(userId);
+            if (dislikes.Any())
+            {
+                return Ok(dislikes);
+            }
+            return NoContent();
+        }
         [HttpPost]
         [Route("AddSongsToUsersDislikes")]
         public async Task<IActionResult> AddSongsToUsersDislikes([FromBody] ChangeUsersRatedSongsModel model)
