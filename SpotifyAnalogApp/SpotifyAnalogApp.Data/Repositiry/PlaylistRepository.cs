@@ -28,6 +28,11 @@ namespace SpotifyAnalogApp.Data.Repositiry
             
             await DeleteAsync(playlist);
         }
+        public async Task<IEnumerable<Song>> GetAllUsersPlaylistSongsAsync(AppUser user)
+        {
+            return await _dbContext.Playlists.Where(x => x.User.AppUserId.Equals(user.AppUserId) && x.User.IsDeleted == false)
+                .SelectMany(x => x.SongsInPlaylist).Include(x => x.Author.Genre).ToListAsync();
+        }
 
         public async Task<Playlist> GetPlaylistByIdAsync(int playlistId)
         {
