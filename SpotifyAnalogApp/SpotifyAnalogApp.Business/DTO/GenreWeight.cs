@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace SpotifyAnalogApp.Business.DTO
 {
-    public class GenreProportion
+    public class GenreWeight
     {
         public string GenreName { get; set; }
-        public double Percentage { get; set; }
+        public double Weight { get; set; }
     }
 }

@@ -187,7 +187,7 @@ namespace SpotifyAnalogApp.Web.Controllers
             {
                 JwtId = token.Id,
                 IsUsed = false,
-                IsRevorked = false,
+                IsRevoked = false,
                 UserId = user.Id,
                 AddedDate = DateTime.UtcNow,
                 ExpiryDate = DateTime.UtcNow.AddMonths(6),
@@ -268,7 +268,7 @@ namespace SpotifyAnalogApp.Web.Controllers
                 }
 
                 // Validation 6 - validate if revoked
-                if (storedToken.IsRevorked)
+                if (storedToken.IsRevoked)
                 {
                     return new AuthResult()
                     {

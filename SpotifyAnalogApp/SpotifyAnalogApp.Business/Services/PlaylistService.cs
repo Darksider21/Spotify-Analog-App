@@ -80,14 +80,20 @@ namespace SpotifyAnalogApp.Business.Services
 
         
 
-        public  async Task<IEnumerable<PlaylistModel>> GetPlaylistsByUserIdAsync(int[] userId)
+        public  async Task<IEnumerable<PlaylistModel>> GetPlaylistsByUserIdAsync(int[] userIds)
         {
-            var playlists = await playlistRepository.GetPlaylistsByUserIdAsync(userId);
-            if (!playlists.Any())
+            var user = await userRepository.GetUsersByIdsAsync(userIds);
+            if (!user.Any())
             {
                 throw new InvalidUserIdException();
             }
-            return ObjectMapper.Mapper.Map<IEnumerable<PlaylistModel>>(playlists);
+            var playlists = await playlistRepository.GetPlaylistsByMultipleUsersIds(userIds);
+            
+            
+                return ObjectMapper.Mapper.Map<IEnumerable<PlaylistModel>>(playlists);
+            
+            
+                
         }
 
         public async Task<PlaylistModel> AddSongsToPlaylistAsync(RequestPlaylistModel playlistModel)
@@ -165,7 +171,7 @@ namespace SpotifyAnalogApp.Business.Services
             var playlist = await playlistRepository.GetPlaylistByIdAsync(playlistId);
                 
                 
-            if (playlist != null)
+            if (playlist == null)
             {
                 throw new InvalidPlaylistIdException();
             }

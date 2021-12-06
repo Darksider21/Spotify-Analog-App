@@ -12,8 +12,8 @@ namespace SpotifyAnalogApp.Data.Repositiry.Base
         public Task<IEnumerable<Playlist>> GetPlaylistsAsync();
 
         public Task<Playlist> GetPlaylistByIdAsync(int playlistId);
-
-        public Task<IEnumerable<Playlist>> GetPlaylistsByUserIdAsync(int[] userIds);
+        public  Task<IEnumerable<Song>> GetAllUsersPlaylistSongsAsync(AppUser user);
+        public Task<IEnumerable<Playlist>> GetPlaylistsByMultipleUsersIds(int[] userIds);
 
         public Task CreatePlaylistForUserAsync(Playlist playlis);
 

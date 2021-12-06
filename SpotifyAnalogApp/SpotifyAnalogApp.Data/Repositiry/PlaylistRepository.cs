@@ -28,6 +28,11 @@ namespace SpotifyAnalogApp.Data.Repositiry
             
             await DeleteAsync(playlist);
         }
+        public async Task<IEnumerable<Song>> GetAllUsersPlaylistSongsAsync(AppUser user)
+        {
+            return await _dbContext.Playlists.Where(x => x.User.AppUserId.Equals(user.AppUserId) && x.User.IsDeleted == false)
+                .SelectMany(x => x.SongsInPlaylist).Include(x => x.Author.Genre).ToListAsync();
+        }
 
         public async Task<Playlist> GetPlaylistByIdAsync(int playlistId)
         {
@@ -40,9 +45,9 @@ namespace SpotifyAnalogApp.Data.Repositiry
             return await _dbContext.Playlists.Where(x => x.User.IsDeleted != true).Include(x => x.SongsInPlaylist).ToListAsync();
         }
 
-        public async Task<IEnumerable<Playlist>> GetPlaylistsByUserIdAsync(int[] userIds)
+        public async Task<IEnumerable<Playlist>> GetPlaylistsByMultipleUsersIds(int[] userIds)
         {
-            return await _dbContext.Playlists.Where(x => userIds.Contains(x.User.AppUserId) && x.User.IsDeleted != true).Select(x => x)
+            return await _dbContext.Playlists.Where(x => userIds.Contains(x.User.AppUserId) && x.User.IsDeleted == false)
                 .Include(x => x.SongsInPlaylist).ToListAsync();
         }
 

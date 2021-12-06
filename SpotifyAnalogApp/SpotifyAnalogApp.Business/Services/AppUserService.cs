@@ -80,78 +80,7 @@ namespace SpotifyAnalogApp.Business.Services
             var mapped = ObjectMapper.Mapper.Map<ICollection<AppUserModel>>(users);
             return mapped;
         }
-        public async Task<AppUserModel> AddSongsToUsersFavoritesAsync(int userId, int[] songsIds)
-        {
-            var user = await userRepository.GetUserByIdAsync(userId);
-            if (user == null)
-            {
-                throw new InvalidUserIdException();
-            }
-            var songsToWorkWith = await songRepository.GetSongsByIdsAsync(songsIds);
-            if (!songsToWorkWith.Any())
-            {
-                throw new InvalidSongIdException();
-            }
-            IEnumerable<Song> usersSongs = new List<Song>();
-
-            List<Song> newSongs = new List<Song>() { };
-            if (user.FavoriteSongs.Any())
-            {
-                usersSongs = user.FavoriteSongs;
-
-            }
-
-            
-            songsToWorkWith = songsToWorkWith.Except(usersSongs).ToList();
-            newSongs.AddRange(usersSongs);
-            newSongs.AddRange(songsToWorkWith);
-            newSongs = newSongs.Distinct().ToList();
-
-            await analyticsService.AddSongsToUserAnalyticsAsync(user, songsToWorkWith);
-            
-            var model = new ModifyUserModel { FavoriteSongs = newSongs };
-            var newUser = ObjectMapper.Mapper.Map<ModifyUserModel, AppUser>(model, user);
-
-            await userRepository.UpdateUserAsync(newUser);
-            var mapped = ObjectMapper.Mapper.Map<AppUserModel>(newUser);
-            return mapped;
-
-
-        }
-
-        public  async Task<AppUserModel> RemoveSongsFromUsersFavoritesAsync(int userId, int[] songsIds)
-        {
-
-            var user = await userRepository.GetUserByIdAsync(userId);
-            if (user == null)
-            {
-                throw new InvalidUserIdException();
-            }
-            var songsToWorkWith = await songRepository.GetSongsByIdsAsync(songsIds);
-            if (!songsToWorkWith.Any())
-            {
-                throw new InvalidSongIdException();
-            }
-            
-            IEnumerable<Song> usersSongs = user.FavoriteSongs;
-
-            List<Song> newSongs = new List<Song>() { };
-            newSongs.AddRange(usersSongs);
-
-            songsToWorkWith = songsToWorkWith.Where(x => usersSongs.Contains(x)).Distinct().ToList();
-            newSongs = newSongs.Except(songsToWorkWith).ToList();
-            newSongs = newSongs.Distinct().ToList();
-
-           await analyticsService.RemoveSongsFromUserAnalyticsAsync(user , songsToWorkWith);
-           
-            
-            var model = new ModifyUserModel { FavoriteSongs = newSongs };
-            var newUser = ObjectMapper.Mapper.Map<ModifyUserModel, AppUser>(model, user);
-
-            await userRepository.UpdateUserAsync(newUser);
-            var mapped = ObjectMapper.Mapper.Map<AppUserModel>(newUser);
-            return mapped;
-        }
+        
 
         public async Task<AppUserModel> UpdateUserInfoAsync(RequestUserModel userModel)
         {

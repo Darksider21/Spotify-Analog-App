@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -22,6 +23,7 @@ namespace SpotifyAnalogApp.Data.Models
 
         public ICollection<GenreAnalytics> Analytics { get; set; }
         public ICollection<Song> FavoriteSongs { get; set; }
+        public ICollection<DislikedSong> DislikedSongs { get; set; }
 
         public ICollection<Playlist> UsersPlaylists { get; set; }
 

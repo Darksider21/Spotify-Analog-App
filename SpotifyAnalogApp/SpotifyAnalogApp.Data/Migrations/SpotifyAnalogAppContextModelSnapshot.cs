@@ -296,6 +296,28 @@ namespace SpotifyAnalogApp.Data.Migrations
                     b.ToTable("Authors");
                 });
 
+            modelBuilder.Entity("SpotifyAnalogApp.Data.Models.DislikedSong", b =>
+                {
+                    b.Property<int>("DislikedSongId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int?>("AppUserId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("SongId")
+                        .HasColumnType("int");
+
+                    b.HasKey("DislikedSongId");
+
+                    b.HasIndex("AppUserId");
+
+                    b.HasIndex("SongId");
+
+                    b.ToTable("DislikedSongs");
+                });
+
             modelBuilder.Entity("SpotifyAnalogApp.Data.Models.Genre", b =>
                 {
                     b.Property<int>("GenreId")
@@ -370,7 +392,7 @@ namespace SpotifyAnalogApp.Data.Migrations
                     b.Property<DateTime>("ExpiryDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<bool>("IsRevorked")
+                    b.Property<bool>("IsRevoked")
                         .HasColumnType("bit");
 
                     b.Property<bool>("IsUsed")
@@ -508,6 +530,21 @@ namespace SpotifyAnalogApp.Data.Migrations
                     b.Navigation("Genre");
                 });
 
+            modelBuilder.Entity("SpotifyAnalogApp.Data.Models.DislikedSong", b =>
+                {
+                    b.HasOne("SpotifyAnalogApp.Data.Models.AppUser", "AppUser")
+                        .WithMany("DislikedSongs")
+                        .HasForeignKey("AppUserId");
+
+                    b.HasOne("SpotifyAnalogApp.Data.Models.Song", "Song")
+                        .WithMany("DislikedSongs")
+                        .HasForeignKey("SongId");
+
+                    b.Navigation("AppUser");
+
+                    b.Navigation("Song");
+                });
+
             modelBuilder.Entity("SpotifyAnalogApp.Data.Models.GenreAnalytics", b =>
                 {
                     b.HasOne("SpotifyAnalogApp.Data.Models.AppUser", "AppUser")
@@ -560,7 +597,14 @@ namespace SpotifyAnalogApp.Data.Migrations
                 {
                     b.Navigation("Analytics");
 
+                    b.Navigation("DislikedSongs");
+
                     b.Navigation("UsersPlaylists");
+                });
+
+            modelBuilder.Entity("SpotifyAnalogApp.Data.Models.Song", b =>
+                {
+                    b.Navigation("DislikedSongs");
                 });
 #pragma warning restore 612, 618
         }

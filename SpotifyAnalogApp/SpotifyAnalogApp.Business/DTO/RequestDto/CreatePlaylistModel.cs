@@ -10,7 +10,6 @@ namespace SpotifyAnalogApp.Business.DTO.RequestDto
     public class CreatePlaylistModel
     {
         [Required]
-        [RegularExpression("a-zA-Z")]
         public string PlaylistName { get; set; }
         [Required]
         public int[] SongsIds { get; set; }

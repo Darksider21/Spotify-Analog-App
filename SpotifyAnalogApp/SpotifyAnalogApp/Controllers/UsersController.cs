@@ -20,11 +20,13 @@ namespace SpotifyAnalogApp.Web.Controllers
     {
         private IAppUserService userService;
         private IPlaylistService playlistService;
+        private IRatingService ratingService;
 
-       public  AppUsersController(IAppUserService userService, IPlaylistService playlistService)
+       public  AppUsersController(IAppUserService userService, IPlaylistService playlistService, IRatingService ratingService)
         {
             this.userService = userService;
             this.playlistService = playlistService;
+            this.ratingService = ratingService;
         }
 
 
@@ -78,29 +80,61 @@ namespace SpotifyAnalogApp.Web.Controllers
         }
 
         [HttpPost]
-        [Route("addsongstousersfavorites")]
-        public async Task<IActionResult> AddSongsToUsersFavorites([FromBody] ChangeUsersFavoriteSongsModel model)
+        [Route("AddSongsToUsersFavorites")]
+        public async Task<IActionResult> AddSongsToUsersFavorites([FromBody] ChangeUsersRatedSongsModel model)
         {
             if (ModelState.IsValid)
             {
-                var user = await userService.AddSongsToUsersFavoritesAsync(model.UserId, model.SongIds);
+                var user = await ratingService.AddSongsToUsersFavoritesAsync(model.UserId, model.SongIds);
                 return Ok(user);
             }
 
             return BadRequest();
             
         }
+
+
         [HttpDelete]
         [Route("RemoveSongsFromUsersFavorites")]
-        public async Task<IActionResult> RemoveSongsFromUsersFavorites([FromBody] ChangeUsersFavoriteSongsModel model)
+        public async Task<IActionResult> RemoveSongsFromUsersFavorites([FromBody] ChangeUsersRatedSongsModel model)
         {
             if (ModelState.IsValid)
             {
-                var user = await userService.AddSongsToUsersFavoritesAsync(model.UserId, model.SongIds);
+                var user = await ratingService.RemoveSongsFromUsersFavoritesAsync(model.UserId, model.SongIds);
                 return Ok(user);
             }
 
             return BadRequest();
+        }
+
+        [HttpGet]
+        [Route("GetUsersDislikes")]
+        public async Task<IActionResult> GetUsersDislikes(int userId)
+        {
+            var dislikes = await ratingService.GetDislikesByUserId(userId);
+            if (dislikes.Any())
+            {
+                return Ok(dislikes);
+            }
+            return NoContent();
+        }
+        [HttpPost]
+        [Route("AddSongsToUsersDislikes")]
+        public async Task<IActionResult> AddSongsToUsersDislikes([FromBody] ChangeUsersRatedSongsModel model)
+        {
+            var dislikedSongs = await ratingService.AddSongsToUsersDislikesAsync(model.UserId, model.SongIds);
+            return Ok(dislikedSongs);
+        }
+        [HttpDelete]
+        [Route("RemoveSongsFromUsersDislikes")]
+        public async Task<IActionResult> RemoveSongsFromUsersDislikes([FromBody] ChangeUsersRatedSongsModel model)
+        {
+            var dislikedSongs = await ratingService.RemoveSongsFromUsersDislikesAsync(model.UserId, model.SongIds);
+            if (dislikedSongs.Any())
+            {
+                return Ok(dislikedSongs);
+            }
+            return NoContent();
         }
 
         [HttpDelete]

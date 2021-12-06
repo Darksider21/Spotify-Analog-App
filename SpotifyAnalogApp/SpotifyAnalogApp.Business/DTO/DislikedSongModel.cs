@@ -6,9 +6,11 @@ using System.Threading.Tasks;
 
 namespace SpotifyAnalogApp.Business.DTO
 {
-    public class GenreProportion
+    public class DislikedSongModel
     {
-        public string GenreName { get; set; }
-        public double Percentage { get; set; }
+        public int DislikedSongId { get; set; }
+
+        public SongModel Song { get; set; }
+        
     }
 }

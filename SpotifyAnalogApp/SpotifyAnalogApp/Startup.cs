@@ -72,18 +72,20 @@ namespace SpotifyAnalogApp
 
             //data
             ConfigureDatabases(services);
-            services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
+            services.AddScoped(typeof(Repository<>), typeof(Repository<>));
             services.AddScoped<IAuthorRepository, AuthorRepository>();
             services.AddScoped<IGenreRepository, GenreRepository>();
             services.AddScoped<ISongRepository, SongRepository>();
             services.AddScoped<IAppUserRepository, AppUserRepository>();
             services.AddScoped<IPlaylistRepository, PlaylistRepository>();
             services.AddScoped<IAnalyticsRepository, AnalyticsRepository>();
+            services.AddScoped<IDislikedSongRepository, DislikedSongRepository>();
 
             //Buisenes
             services.AddScoped<ISongService, SongService>();
             services.AddScoped<IGenreService, GenreService>();
             services.AddScoped<IAuthorService, AuthorService>();
+            services.AddScoped<IRatingService, RatingService>();
             services.AddScoped<IRandomService, RandomService>();
             services.AddScoped<IAppUserService, AppUserService>();
             services.AddScoped<IPlaylistService, PlaylistService>();
