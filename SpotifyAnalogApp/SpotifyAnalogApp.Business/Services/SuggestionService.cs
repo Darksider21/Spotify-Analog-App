@@ -22,6 +22,9 @@ namespace SpotifyAnalogApp.Business.Services
         private IRandomService randomService;
         private IPlaylistRepository playlistRepository;
         private IDislikedSongRepository dislikedSongRepository;
+        private const int playlistWeight = 1;
+        private const int favoriteWeight = 5;
+        private const int dislikeWeight = -10;
 
         public SuggestionService(IAppUserRepository appUserRepository,ISongRepository songRepository,
             IAnalyticsRepository analyticsRepository , IRandomService randomService , IPlaylistRepository playlistRepository
@@ -50,8 +53,8 @@ namespace SpotifyAnalogApp.Business.Services
             var usersAnalytics = await analyticsRepository.GetAnalyticsByUserIdAsync(userId);
             var usersPlaylistSongs = await playlistRepository.GetAllUsersPlaylistSongsAsync(user);
             var usersFavoritesSongs = user.FavoriteSongs.Select(x => x).ToList();
-            var UsersdislikedSongs = await dislikedSongRepository.GetDislikedSongsByUserIdAsync(user.AppUserId);
-            var dislikedSongs = UsersdislikedSongs.Select(x => x.Song).ToList();
+            var usersDislikedSongs = await dislikedSongRepository.GetDislikedSongsByUserIdAsync(user.AppUserId);
+            var dislikedSongs = usersDislikedSongs.Select(x => x.Song).ToList();
 
             var analyticsToWokrWith = usersAnalytics.Where(x => x.SongsOfThisGenreCount > 0).ToList();
 
@@ -60,33 +63,35 @@ namespace SpotifyAnalogApp.Business.Services
                 var songs = await songRepository.GetRandomSongsListAsync(amountOfsongs);
                 return ObjectMapper.Mapper.Map<IEnumerable<SongModel>>(songs);
             }
-
+            var genreProportions = GenerateGenreProportionsFromAnalytics(analyticsToWokrWith);
             
             var availibleGenres = analyticsToWokrWith.Select(x => x.Genre.GenreName).ToArray();
             var songsToWorkWith = await songRepository.GetSongsByMultipleGenresAsync(availibleGenres);
 
-            List<Song> ShuffledsongsList = songsToWorkWith.OrderBy(_ => Guid.NewGuid()).ToList();
-            var calculatedGenresWeight = CalculateGenresWeight(availibleGenres, usersPlaylistSongs, usersFavoritesSongs , dislikedSongs);
-            var calculatedGenresWeightProportion = CalculateGenresProportions(calculatedGenresWeight).OrderBy(x => x.Percentage).Reverse().ToArray();
+            List<Song> ShuffledsongsListWithoutDislikedAuthors = songsToWorkWith
+                .Where(x => !usersDislikedSongs.Select(y => y.Song.Author.Name).Contains(x.Author.Name)).Select(x => x)
+                .OrderBy(_ => Guid.NewGuid()).ToList();
 
-            var weightedSongsCount = amountOfsongs - amountOfsongs * 0.10;
+            var UnweightedSongsInitialCollection = InitializeWeightedSongs(ShuffledsongsListWithoutDislikedAuthors);
+
+            ApplyWeight(UnweightedSongsInitialCollection, usersPlaylistSongs , playlistWeight);
+            ApplyWeight(UnweightedSongsInitialCollection,usersFavoritesSongs, favoriteWeight);
+            ApplyWeight(UnweightedSongsInitialCollection,usersDislikedSongs.Select(x => x.Song), dislikeWeight);
+
+            var fullyWeightedSongsCollection = UnweightedSongsInitialCollection.OrderBy(x => x.Weight).Reverse();
+
+            double percentsOfRandomSuggestions = 0.10;
+            var weightedSongsCount = amountOfsongs - amountOfsongs * percentsOfRandomSuggestions;
+
             List<Song> suggestedSongs = new();
-            while (suggestedSongs.Count < weightedSongsCount)
+
+            foreach (var genre in genreProportions)
             {
-                for (int i = 0; i < calculatedGenresWeightProportion.Length; i++)
-                {
-                    var item = calculatedGenresWeightProportion[i];
-                    var randomNumber = randomService.GetRandom().Next(0, 101);
-                    if (randomNumber <= item.Percentage)
-                    {
-                        var songToAdd = ShuffledsongsList
-                            .Where(x => x.Genre.GenreName.Equals(item.GenreName) && !dislikedSongs.Select(x=> x.Author.Name).Contains(x.Author.Name))
-                            .FirstOrDefault();
-                        suggestedSongs.Add(songToAdd);
-                        ShuffledsongsList.Remove(songToAdd);
-                    }
-                }
-            }
+                int numberOfSongsToTakeOfThisGenre = Convert.ToInt32(weightedSongsCount * (genre.Percentage / 100));
+                var songsToAdd = fullyWeightedSongsCollection.Where(x => x.Song.Genre.GenreName.Equals(genre.Genre.GenreName))
+                    .Select(x => x.Song).Take(numberOfSongsToTakeOfThisGenre);
+                suggestedSongs.AddRange(songsToAdd);
+            }            
 
             var randomSongsFromRepository = await songRepository.GetRandomSongsListAsync(amountOfsongs * 4);
             List<Song> randomSongsToFillLastSuggestions = randomSongsFromRepository.OrderBy(_ => Guid.NewGuid()).ToList();
@@ -97,90 +102,43 @@ namespace SpotifyAnalogApp.Business.Services
                 randomSongsToFillLastSuggestions.Remove(songToAdd);
 
             }
+            
+            var shuffledSuggestedSongs = suggestedSongs.OrderBy(_ => Guid.NewGuid()).ToList();
 
 
-            return ObjectMapper.Mapper.Map<IEnumerable<SongModel>>(suggestedSongs);
+            return ObjectMapper.Mapper.Map<IEnumerable<SongModel>>(shuffledSuggestedSongs);
         }
 
-
-
-        private IEnumerable<GenreWeight> CalculateGenresWeight(string[] availiableGenres, IEnumerable<Song> playlistSongs, IEnumerable<Song> favoritesSong,
-            IEnumerable<Song> dislikedSongs)
+        private List<GenreProportion> GenerateGenreProportionsFromAnalytics(List<GenreAnalytics> analyticsToWokrWith)
         {
-            List<GenreWeight> genreWeights = new();
+            List<GenreProportion> genresToWorkWith = analyticsToWokrWith.Select(x => new GenreProportion() { Genre = x.Genre , Percentage = 0 }).ToList();
+            double SumOfAllSongs = analyticsToWokrWith.Sum(x => x.SongsOfThisGenreCount);
+            
+            genresToWorkWith
+                .ForEach(x => x.Percentage = analyticsToWokrWith.Where(y => y.Genre.GenreName.Equals(x.Genre.GenreName))
+                .Select(z => z.SongsOfThisGenreCount)
+                .FirstOrDefault() / SumOfAllSongs * 100);
+            
 
-            foreach (var genre in availiableGenres)
+            return genresToWorkWith;
+        }
+
+        private void ApplyWeight(List<WeightedSong> unweightedSongsInitialCollection, IEnumerable<Song> criteriaCollection , double weightIndex)
+        {
+            foreach (var weightedsong in unweightedSongsInitialCollection)
             {
-                var newGenreWeright = new GenreWeight() { GenreName = genre };
-                genreWeights.Add(newGenreWeright);
+                var songsWithSameGenre = criteriaCollection.Where(x => x.Genre.GenreName.Equals(weightedsong.Song.Genre.GenreName)).ToList();
+
+                songsWithSameGenre.ForEach(x => weightedsong.Weight += weightIndex);
 
             }
-
-            AddWeightToGenreWeight(genreWeights, playlistSongs, 1);
-
-            AddWeightToGenreWeight(genreWeights, favoritesSong, 5);
-
-            AddWeightToGenreWeight(genreWeights, dislikedSongs, -10);
-
-
-
-
-
-            return genreWeights;
         }
 
-        private void AddWeightToGenreWeight(List<GenreWeight> genreWeights, IEnumerable<Song> songCollection, int weightValue)
+        
+
+        private List<WeightedSong> InitializeWeightedSongs(List<Song> shuffledsongsList)
         {
-            foreach (var song in songCollection)
-            {
-                var currentGenreWeight = genreWeights.FirstOrDefault(x => x.GenreName == song.Genre.GenreName);
-                if (currentGenreWeight != null)
-                {
-                    currentGenreWeight.Weight += weightValue;
-                }
-            }
+            return shuffledsongsList.Select(x => new WeightedSong() { Song = x, Weight = 1 }).ToList();
         }
-        private IEnumerable<GenreProportion> CalculateGenresProportions(IEnumerable<GenreWeight> genreWeights)
-        {
-            List<GenreProportion> genreProportions = new();
-            var totalWeigt = genreWeights.Where(x => x.Weight >= 0).Sum(x => x.Weight);
-
-
-            genreProportions = genreWeights.Select(
-                x => new GenreProportion()
-            {
-                GenreName = x.GenreName,
-                Percentage = (x.Weight / totalWeigt) * 100
-            }).ToList();
-            return genreProportions;
-        }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        //private IEnumerable<GenreProportion> CalculateSongsProportions(IEnumerable<GenreAnalytics> usersAnalytics)
-        //{
-        //    int totalSongs = usersAnalytics.Sum(x => x.SongsOfThisGenreCount);
-        //    List<GenreProportion> usersSongsProportions = new();
-
-        //    foreach (var analytics in usersAnalytics)
-        //    {
-        //        int percentage = Convert.ToInt32(Math.Round(((decimal)analytics.SongsOfThisGenreCount / totalSongs) * 100, 0));
-        //        var calculatedProportion = new GenreProportion() { GenreName = analytics.Genre.GenreName, Percentage = percentage };
-        //        usersSongsProportions.Add(calculatedProportion);
-        //    }
-        //    return usersSongsProportions;
-
-        //}
     }
 }
