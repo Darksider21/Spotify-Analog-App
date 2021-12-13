@@ -27,6 +27,8 @@ namespace SpotifyAnalogApp.Web.Controllers
         private readonly JwtConfig jwtConfig;
         private readonly TokenValidationParameters tokenValidationParams;
         private readonly SpotifyAnalogAppContext DbContext;
+        private const int refreshTokenExpiresInMonth = 6;
+        private const int expiresInMinutes = 15;
 
 
         public AuthManagementController(UserManager<IdentityUser> userManager, IOptionsMonitor<JwtConfig> optionsMonitor, TokenValidationParameters tokenValidationParams,
@@ -176,7 +178,7 @@ namespace SpotifyAnalogApp.Web.Controllers
                     new Claim(JwtRegisteredClaimNames.Sub, user.Email),
                     new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
                 }),
-                Expires = DateTime.UtcNow.AddMinutes(10), // 5-10 
+                Expires = DateTime.UtcNow.AddMinutes(expiresInMinutes), // 5-10 
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
             };
 
@@ -190,7 +192,7 @@ namespace SpotifyAnalogApp.Web.Controllers
                 IsRevoked = false,
                 UserId = user.Id,
                 AddedDate = DateTime.UtcNow,
-                ExpiryDate = DateTime.UtcNow.AddMonths(6),
+                ExpiryDate = DateTime.UtcNow.AddMonths(refreshTokenExpiresInMonth),
                 Token = RandomString(35) + Guid.NewGuid()
             };
 

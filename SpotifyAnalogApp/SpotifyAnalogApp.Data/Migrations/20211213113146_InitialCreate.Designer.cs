@@ -10,8 +10,8 @@ using SpotifyAnalogApp.Data.Data;
 namespace SpotifyAnalogApp.Data.Migrations
 {
     [DbContext(typeof(SpotifyAnalogAppContext))]
-    [Migration("20211203234526_Initial-Migrate")]
-    partial class InitialMigrate
+    [Migration("20211213113146_InitialCreate")]
+    partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
