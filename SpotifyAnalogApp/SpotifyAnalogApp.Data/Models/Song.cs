@@ -9,7 +9,7 @@ namespace SpotifyAnalogApp.Data.Models
 {
      public class Song
     {
-        public int SongId { get; protected set; }
+        public int SongId { get; set; }
         [Required]
 
         public string Name { get; set; }

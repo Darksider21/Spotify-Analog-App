@@ -21,14 +21,17 @@ namespace SpotifyAnalogApp.Business.Services
         private ISongRepository songRepository;
         private IPlaylistRepository playlistRepository;
         private IAnalyticsService analyticsService;
+        private IDateTimeService dateTimeService;
 
 
-        public AppUserService(IAppUserRepository userRepo , ISongRepository songRepo , IPlaylistRepository playlistRepo, IAnalyticsService analyticsService)
+        public AppUserService(IAppUserRepository userRepo , ISongRepository songRepo , IPlaylistRepository playlistRepo, IAnalyticsService analyticsService , 
+            IDateTimeService dateTimeService)
         {
             songRepository = songRepo;
             userRepository = userRepo;
             playlistRepository = playlistRepo;
             this.analyticsService = analyticsService;
+            this.dateTimeService = dateTimeService;
         }
         public  async  Task<AppUserModel> CreateUserAsync(string name, string email)
         {
@@ -41,7 +44,7 @@ namespace SpotifyAnalogApp.Business.Services
             {
                 throw new DuplicateEmailException();
             }
-            var now = DateTime.Now;
+            var now = dateTimeService.ReturnDaytimeNow();
             var user = new AppUser { Name = name, Email = email, DateCreated = now};
            await  userRepository.CreateUserAsync(user);
             var mapped = ObjectMapper.Mapper.Map<AppUserModel>(user);

@@ -44,7 +44,7 @@ namespace SpotifyAnalogApp.Business.Services
                  authorList = await authorRepository.GetAllAuthorsAsync();
             }
 
-            if (authorList.Any())
+            if (!authorList.Any())
             {
                 throw new ContentNotFoundException();
             }
