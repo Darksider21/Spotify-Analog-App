@@ -9,7 +9,7 @@ namespace SpotifyAnalogApp.Business.DTO
 {
     public class SongModel
     {
-        public int SongId { get; protected set; }
+        public int SongId { get; set; }
         
 
         public string Name { get; set; }
