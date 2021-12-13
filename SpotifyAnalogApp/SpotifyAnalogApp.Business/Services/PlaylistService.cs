@@ -39,7 +39,11 @@ namespace SpotifyAnalogApp.Business.Services
             var SongsToAdd = await songRepository.GetSongsByIdsAsync(playlistModel.SongsIds);
             if (!SongsToAdd.Any())
             {
-                throw new InvalidSongIdException();
+                var newPlaylistWithoutSongs = new Playlist() { PlaylistName = playlistModel.PlaylistName, SongsInPlaylist = SongsToAdd.ToList(), User = user };
+                await playlistRepository.CreatePlaylistForUserAsync(newPlaylistWithoutSongs);
+
+                var mappedWithoutSongs = ObjectMapper.Mapper.Map<PlaylistModel>(newPlaylistWithoutSongs);
+                return mappedWithoutSongs;
             }
             SongsToAdd = SongsToAdd.Distinct();
             var newPlaylist = new Playlist() { PlaylistName= playlistModel.PlaylistName , SongsInPlaylist = SongsToAdd.ToList() , User = user};
